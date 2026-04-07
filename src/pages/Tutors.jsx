@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import tutorImg from "../assets/sukhmeet.jpeg";
+import tutorImg from "../assets/sukhmeet.jpg";
 
 const Tutors = () => {
   const tutor = {
@@ -34,11 +34,11 @@ const Tutors = () => {
             maxWidth: '350px'
           }}
         >
-          <div style={{ height: '250px', width: '100%', overflow: 'hidden' }}>
+          <div style={{ width: '100%', overflow: 'hidden' }}>
             <img
               src={tutor.image}
               alt={tutor.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
             />
           </div>
 
