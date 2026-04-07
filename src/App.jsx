@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import CustomCursor from './components/ui/CustomCursor';
@@ -28,6 +29,7 @@ function App() {
         <WhatsAppCTA />
         <Footer />
       </div>
+      <Analytics />
     </Router>
   );
 }
