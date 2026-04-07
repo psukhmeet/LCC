@@ -30,7 +30,8 @@ const Tutors = () => {
           style={{
             borderRadius: '20px',
             overflow: 'hidden',
-            width: '320px'
+            width: '100%',
+            maxWidth: '350px'
           }}
         >
           <div style={{ height: '250px', width: '100%', overflow: 'hidden' }}>

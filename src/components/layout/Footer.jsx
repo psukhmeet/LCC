@@ -7,7 +7,7 @@ const Footer = () => {
     <footer style={{ background: '#1E293B', color: 'white', padding: '60px 0 30px', marginTop: 'auto' }}>
       <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '40px' }}>
         <div style={{ flex: '1 1 300px' }}>
-          <h3 className="heading-lg" style={{ color: 'white', fontSize: '1.8rem', margin: '0 0 16px 0' }}>Learnwood Coaching</h3>
+          <h3 className="heading-lg" style={{ color: 'white', fontSize: '1.8rem', margin: '0 0 16px 0' }}>Learnwood Coaching Classes</h3>
           <div style={{ marginBottom: '16px', display: 'flex', gap: '15px' }}>
             <a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" style={{ color: '#94A3B8', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}>
               <Youtube size={24} />

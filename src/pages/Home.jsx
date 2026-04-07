@@ -56,15 +56,15 @@ const Home = () => {
             <h1 className="heading-xl" style={{ marginBottom: '20px' }}>
               Build Your Future with <span className="text-gradient">Learnwood </span>
             </h1>
-            <p style={{ fontSize: '1.2rem', color: 'var(--text-light)', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' }}>
+            <p className="text-visible" style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' }}>
               Premium PCM coaching for class 11–12. Unlock your true potential with expert guidance and modern teaching standards.
             </p>
-            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link to="/contact" className="btn-primary">
                 Join Now <ArrowRight size={18} />
               </Link>
-              <Link to="#" className="btn-outline">
-                Explore Courses
+              <Link to="/tutors" className="btn-outline">
+                Explore Tutors
               </Link>
             </div>
           </motion.div>
@@ -78,7 +78,7 @@ const Home = () => {
             <h2 className="heading-lg">Our Focus Subjects</h2>
             <p style={{ color: 'var(--text-light)' }}>Specialized coaching in core science subjects</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
             <TiltCard>
               <div style={{ background: 'rgba(47, 128, 237, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
                 <Award size={30} />
@@ -157,7 +157,7 @@ const Home = () => {
       </section>
 
       {/* Sticky Bottom Bar CTA */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', background: 'rgba(15, 23, 42, 0.9)', backdropFilter: 'blur(10px)', color: 'white', padding: '12px 20px', display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center', zIndex: 9998, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+      <div className="desktop-only" style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', background: 'rgba(15, 23, 42, 0.9)', backdropFilter: 'blur(10px)', color: 'white', padding: '12px 20px', display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center', zIndex: 9998, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         <span style={{ fontWeight: '600' }}>Enroll Now | Limited Seats</span>
         <button onClick={() => window.open('https://wa.me/+917814877280?text=Hi, How can i help  you.', '_blank')} className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.9rem' }}>WhatsApp Us</button>
       </div>
