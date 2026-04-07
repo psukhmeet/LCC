@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, UserCircle2, Menu, X } from 'lucide-react';
+import logoImg from '../../assets/logo.png';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,7 +12,7 @@ const Navbar = () => {
     <nav className="navbar glass">
       <div className="container">
         <Link to="/" className="logo">
-          <img className='logo-img' src="/src/assets/logo.png" alt="Learnwood Logo" style={{ width: '40px', height: '40px' }} />
+          <img className='logo-img' src={logoImg} alt="Learnwood Logo" style={{ width: '40px', height: '40px' }} />
           <span>Learnwood Coaching Classes</span>
         </Link>
 
