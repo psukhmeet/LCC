@@ -2,14 +2,14 @@ import { MessageCircle } from 'lucide-react';
 
 const WhatsAppCTA = () => {
   const phoneNumber = "+917814877280";
-  const message = encodeURIComponent("Hi, How can i help  you.");
+  const message = encodeURIComponent("Hello, I want to join Learnwood Coaching Classes.");
   const waLink = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
     <div style={{ position: 'fixed', bottom: '30px', right: '30px', zIndex: 9999 }}>
-      <a 
-        href={waLink} 
-        target="_blank" 
+      <a
+        href={waLink}
+        target="_blank"
         rel="noopener noreferrer"
         style={{
           display: 'flex',
