@@ -1,0 +1,29 @@
+{
+  "general": {
+    "siteName": "Learnwood",
+    "heroTitle": "Build Your Future with Learnwood",
+    "heroSubtext": "Premium PCM coaching for class 11–12. Unlock your true potential with expert guidance and modern teaching standards.",
+    "phone": "+917814877280",
+    "email": "learnwoodcoachingclasses@gmail.com",
+    "address": "Ludhiana",
+    "mapUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17264.45970834544!2d75.9505250055313!3d30.83899459283517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39107614872ab7b5%3A0xaf8165cce2800588!2sSahnewal%2C%20Punjab!5e0!3m2!1sen!2sin!4v1775560493885!5m2!1sen!2sin"
+  },
+  "stats": {
+    "studentsMentored": 500,
+    "studentsMentoredSuffix": "+",
+    "scoredAbove90": 95,
+    "scoredAbove90Suffix": "%+",
+    "highestScore": 98,
+    "highestScoreSuffix": "%"
+  },
+  "tutors": [
+    {
+      "id": "1",
+      "name": "Mr. Sukhmeet Singh",
+      "subject": "Mathematics",
+      "experience": "NIT Jamshedpur | AIR-377 NIMCET'25 | 5+ Years Experience",
+      "image": "sukhmeet.jpg"
+    }
+  ],
+  "messages": []
+}

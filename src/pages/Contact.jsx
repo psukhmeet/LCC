@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Send, MapPin, Phone, Mail } from 'lucide-react';
+import { DataContext } from '../context/DataContext';
 
 const Contact = () => {
+  const { data, addMessage } = useContext(DataContext);
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    addMessage(formData);
     alert('Thank you for contacting us. We will get back to you shortly.');
     setFormData({ name: '', phone: '', message: '' });
   };
@@ -72,22 +75,22 @@ const Contact = () => {
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <li style={{ display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--text-light)' }}>
                 <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%' }}><MapPin size={20} /></div>
-                <span>Ludhiana</span>
+                <span>{data.general.address}</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--text-light)' }}>
                 <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%' }}><Phone size={20} /></div>
-                <span>+91 78148 77280</span>
+                <span>{data.general.phone}</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--text-light)' }}>
                 <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%' }}><Mail size={20} /></div>
-                <span>learnwoodcoachingclasses@gmail.com</span>
+                <span>{data.general.email}</span>
               </li>
             </ul>
           </div>
 
           <div style={{ width: '100%', height: '250px', borderRadius: '20px', overflow: 'hidden' }}>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17264.45970834544!2d75.9505250055313!3d30.83899459283517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39107614872ab7b5%3A0xaf8165cce2800588!2sSahnewal%2C%20Punjab!5e0!3m2!1sen!2sin!4v1775560493885!5m2!1sen!2sin"
+              src={data.general.mapUrl}
               width="100%"
               height="100%"
               style={{ border: 0 }}

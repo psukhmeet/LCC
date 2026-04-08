@@ -4,8 +4,8 @@ import { useInView } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 import { BookOpen, Award, Users, Star, ArrowRight, CheckCircle2 } from 'lucide-react';
 import ParticleBackground from '../components/ui/ParticleBackground';
-
-const AnimatedCounter = ({ end, duration = 2, suffix = "+" }) => {
+import { useContext } from 'react';
+import { DataContext } from '../context/DataContext';const AnimatedCounter = ({ end, duration = 2, suffix = "+" }) => {
   const [count, setCount] = useState(0);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.5 });
 
@@ -41,6 +41,8 @@ const TiltCard = ({ children, className }) => {
 };
 
 const Home = () => {
+  const { data } = useContext(DataContext);
+
   return (
     <div style={{ position: 'relative' }}>
       <ParticleBackground />
@@ -54,10 +56,10 @@ const Home = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="heading-xl" style={{ marginBottom: '20px' }}>
-              Build Your Future with <span className="text-gradient">Learnwood </span>
+              {data.general.heroTitle}
             </h1>
             <p className="text-visible" style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' }}>
-              Premium PCM coaching for class 11–12. Unlock your true potential with expert guidance and modern teaching standards.
+              {data.general.heroSubtext}
             </p>
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link to="/contact" className="btn-primary">
@@ -113,19 +115,19 @@ const Home = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px', textAlign: 'center' }}>
             <div>
               <div className="heading-xl" style={{ color: 'var(--primary)' }}>
-                <AnimatedCounter end={500} />
+                <AnimatedCounter end={data.stats.studentsMentored} suffix={data.stats.studentsMentoredSuffix} />
               </div>
               <p style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-dark)' }}>Students Mentored</p>
             </div>
             <div>
               <div className="heading-xl" style={{ color: 'var(--secondary)' }}>
-                <AnimatedCounter end={95} suffix="%+" />
+                <AnimatedCounter end={data.stats.scoredAbove90} suffix={data.stats.scoredAbove90Suffix} />
               </div>
               <p style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-dark)' }}>Scored Above 90%</p>
             </div>
             <div>
               <div className="heading-xl" style={{ color: 'var(--primary)' }}>
-                <AnimatedCounter end={98} suffix="%" />
+                <AnimatedCounter end={data.stats.highestScore} suffix={data.stats.highestScoreSuffix} />
               </div>
               <p style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-dark)' }}>Highest Board Score</p>
             </div>
@@ -159,7 +161,7 @@ const Home = () => {
       {/* Sticky Bottom Bar CTA */}
       <div className="desktop-only" style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', background: 'rgba(15, 23, 42, 0.9)', backdropFilter: 'blur(10px)', color: 'white', padding: '12px 20px', display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center', zIndex: 9998, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         <span style={{ fontWeight: '600' }}>Enroll Now | Limited Seats</span>
-        <button onClick={() => window.open('https://wa.me/+917814877280?text=Hi, How can i help  you.', '_blank')} className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.9rem' }}>WhatsApp Us</button>
+        <button onClick={() => window.open(`https://wa.me/${data.general.phone}?text=Hi, How can i help  you.`, '_blank')} className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.9rem' }}>WhatsApp Us</button>
       </div>
 
     </div>

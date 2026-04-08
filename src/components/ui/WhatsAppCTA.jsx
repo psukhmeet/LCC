@@ -1,7 +1,10 @@
 import { MessageCircle } from 'lucide-react';
+import { useContext } from 'react';
+import { DataContext } from '../../context/DataContext';
 
 const WhatsAppCTA = () => {
-  const phoneNumber = "+917814877280";
+  const { data } = useContext(DataContext);
+  const phoneNumber = data.general.phone;
   const message = encodeURIComponent("Hello, I want to join Learnwood Coaching Classes.");
   const waLink = `https://wa.me/${phoneNumber}?text=${message}`;
 
