@@ -88,14 +88,20 @@ const useAuth = () => {
       // Create profile only on first sign-in
       const snap = await getDoc(doc(db, 'users', user.uid));
       if (!snap.exists()) {
-        // Check if email is in the authorizedTeachers whitelist
-        const teacherSnap = await getDoc(doc(db, 'authorizedTeachers', user.email));
-        const role = teacherSnap.exists() ? 'teacher' : 'student';
+        let role = 'student';
+        
+        // Check if email is in the authorizedTeachers whitelist (only if they have an email)
+        if (user.email) {
+          const teacherSnap = await getDoc(doc(db, 'authorizedTeachers', user.email));
+          if (teacherSnap.exists()) {
+            role = 'teacher';
+          }
+        }
 
         await setDoc(doc(db, 'users', user.uid), {
           uid:             user.uid,
           name:            user.displayName || 'User',
-          email:           user.email,
+          email:           user.email || null,
           role,
           enrolledClasses: [],
           createdAt:       serverTimestamp(),
