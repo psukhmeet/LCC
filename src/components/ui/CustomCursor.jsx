@@ -45,7 +45,7 @@ const CustomCursor = () => {
       height: 16,
       width: 16,
       backgroundColor: 'transparent',
-      border: '2px solid #56CCF2',
+      border: '2px solid #47889e',
       boxShadow: '0 0 10px rgba(86, 204, 242, 0.5)',
     },
     hover: {
