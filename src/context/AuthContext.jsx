@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
 
 const AuthContext = createContext(null);
@@ -24,9 +24,20 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(firebaseUser);
         
         // Listen to the user's profile changes dynamically
-        profileUnsubscribe = onSnapshot(doc(db, 'users', firebaseUser.uid), (snap) => {
+        profileUnsubscribe = onSnapshot(doc(db, 'users', firebaseUser.uid), async (snap) => {
           if (snap.exists()) {
-            setUserProfile(snap.data());
+            const data = snap.data();
+            
+            // Universal Fallback: If they logged in via Email/Password and are still 'student', check whitelist
+            if (data.role !== 'teacher' && firebaseUser.email) {
+              const teacherSnap = await getDoc(doc(db, 'authorizedTeachers', firebaseUser.email.toLowerCase()));
+              if (teacherSnap.exists()) {
+                await setDoc(doc(db, 'users', firebaseUser.uid), { role: 'teacher', email: firebaseUser.email.toLowerCase() }, { merge: true });
+                return; // The next snapshot will catch the update
+              }
+            }
+
+            setUserProfile(data);
           } else {
             setUserProfile({ name: firebaseUser.displayName || 'User', role: 'student', enrolledClasses: [] });
           }
