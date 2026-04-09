@@ -31,9 +31,8 @@ const Dashboard = () => {
           // Teachers can see and start ANY class created by the admin
           q = query(collection(db, 'classes'));
         } else {
-          const enrolled = userProfile?.enrolledClasses || [];
-          if (enrolled.length === 0) { setClasses([]); setLoading(false); return; }
-          q = query(collection(db, 'classes'), where('__name__', 'in', enrolled));
+          // Allow students to see ALL scheduled classes instead of heavily restricting by enrollment links
+          q = query(collection(db, 'classes'));
         }
         const snap = await getDocs(q);
         setClasses(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -74,6 +73,7 @@ const Dashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
+      paddingTop: '70px', // Clear the fixed Navbar
       background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #0f172a 100%)',
       fontFamily: "'Inter', sans-serif",
       color: 'white',
