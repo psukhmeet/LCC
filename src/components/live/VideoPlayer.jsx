@@ -1,14 +1,34 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ConnectionStatus from './ConnectionStatus';
 
 const VideoPlayer = ({ stream, isMuted, isTeacher, connectionStatus }) => {
   const videoRef = useRef(null);
+  const [playBlocked, setPlayBlocked] = useState(false);
 
   useEffect(() => {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('[VideoPlayer] Autoplay blocked:', err);
+          if (err.name === 'NotAllowedError') {
+            setPlayBlocked(true);
+          }
+        });
+      }
     }
   }, [stream]);
+
+  const handleUnblock = () => {
+    if (videoRef.current) {
+      // Browsers allow play if explicitly triggered by a user click
+      videoRef.current.muted = false; 
+      videoRef.current.play().then(() => {
+        setPlayBlocked(false);
+      }).catch(err => console.error('Failed to unblock play:', err));
+    }
+  };
 
   return (
     <div style={{
@@ -36,6 +56,27 @@ const VideoPlayer = ({ stream, isMuted, isTeacher, connectionStatus }) => {
           background: '#080f1a',
         }}
       />
+
+      {/* ─── Play Blocked Overlay (Mobile Autoplay fix) ─── */}
+      {playBlocked && stream && (
+        <div style={{
+          position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.7)',
+          zIndex: 10, backdropFilter: 'blur(4px)'
+        }}>
+          <button 
+            onClick={handleUnblock}
+            style={{
+              background: '#2F80ED', color: 'white', border: 'none',
+              padding: '12px 24px', borderRadius: '30px', fontSize: '1rem',
+              fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 15px rgba(47,128,237,0.4)',
+              display: 'flex', alignItems: 'center', gap: '8px'
+            }}
+          >
+            ▶️ Tap to Join Audio & Video
+          </button>
+        </div>
+      )}
 
       {/* ─── Overlay states ─── */}
       {!stream && (

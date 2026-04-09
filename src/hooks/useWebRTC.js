@@ -7,11 +7,12 @@ const buildRTCConfig = () => ({
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: `stun:${import.meta.env.VITE_TURN_SERVER_URL}:80` },
     {
       urls: [
-        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:3478?transport=udp`,
-        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:3478?transport=tcp`,
-        `turns:${import.meta.env.VITE_TURN_SERVER_URL}:443?transport=tcp`,
+        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:80`,
+        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:443`,
+        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:443?transport=tcp`,
       ],
       username:   import.meta.env.VITE_TURN_USERNAME   || 'openrelayproject',
       credential: import.meta.env.VITE_TURN_CREDENTIAL || 'openrelayproject',
@@ -86,12 +87,16 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
     }
 
     setConnectionStatus('connecting');
-    const socket = io(SIGNALING_URL, { transports: ['websocket'], reconnectionAttempts: 5 });
+    const socket = io(SIGNALING_URL, { transports: ['websocket', 'polling'], reconnectionAttempts: 5 });
     socketRef.current = socket;
 
     socket.on('connect', () => {
       socket.emit('join-room', classId, currentUser.uid, currentUser.role, socket.id);
-      if (!isTeacher) setConnectionStatus('waiting'); // waiting for teacher
+      if (isTeacher) {
+        setConnectionStatus('connected'); // Teacher is ready and waiting for students
+      } else {
+        setConnectionStatus('waiting'); // Student waiting for WebRTC
+      }
     });
 
     socket.on('disconnect', () => setConnectionStatus('reconnecting'));
@@ -149,7 +154,9 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       };
 
       pc.onconnectionstatechange = () => {
-        if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
+        if (pc.connectionState === 'connected') {
+          setConnectionStatus('connected');
+        } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
           setConnectionStatus('reconnecting');
         }
       };
