@@ -89,7 +89,7 @@ const S = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { loginWithEmail, registerWithEmail, loginWithGoogle, error, loading, clearError } = useAuth();
+  const { loginWithEmail, registerWithEmail, loginWithGoogle, resetPassword, error, loading, clearError } = useAuth();
 
   const [mode, setMode]       = useState('login');  // 'login' | 'register'
   const [email, setEmail]     = useState('');
@@ -153,7 +153,22 @@ const Login = () => {
             style={S.input} type="email" placeholder="you@example.com"
             value={email} onChange={e => setEmail(e.target.value)} required
           />
-          <label style={S.label}>Password</label>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <label style={{...S.label, marginBottom: 0}}>Password</label>
+            {mode === 'login' && (
+              <button 
+                type="button" 
+                onClick={async () => {
+                  if (!email.trim()) { alert('Please enter your email first to reset your password.'); return; }
+                  const success = await resetPassword(email);
+                  if (success) alert('Password reset email sent! Please check your inbox.');
+                }}
+                style={{ background: 'none', border: 'none', color: '#56CCF2', fontSize: '0.75rem', cursor: 'pointer', padding: 0 }}
+              >
+                Forgot Password?
+              </button>
+            )}
+          </div>
           <input
             style={S.input} type="password" placeholder="••••••••"
             value={password} onChange={e => setPassword(e.target.value)} required

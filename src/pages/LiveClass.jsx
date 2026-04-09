@@ -170,10 +170,10 @@ const LiveClass = () => {
       )}
 
       {/* ── Main Area ── */}
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
+      <div className="live-class-wrapper">
 
         {/* Video Section */}
-        <div style={{ flex: isFullscreen ? 1 : '0 0 72%', padding: isFullscreen ? 0 : '12px', display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative' }}>
+        <div style={{ flex: isFullscreen ? 1 : '1 1 auto', padding: isFullscreen ? 0 : '12px', display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative' }}>
           <div style={{ flex: 1, borderRadius: isFullscreen ? 0 : '12px', overflow: 'hidden' }}>
             <VideoPlayer
               stream={isTeacher ? localStream : remoteStream}
@@ -185,19 +185,21 @@ const LiveClass = () => {
 
           {/* Raised hand queue (floats over teacher video) */}
           {isTeacher && (
-            <RaisedHandQueue
-              classId={classId}
-              raisedHands={raisedHands}
-              onDismiss={dismissHand}
-              onClearAll={clearAll}
-              isTeacher={isTeacher}
-            />
+            <div style={{ position: 'absolute', top: '24px', left: '24px', width: '320px', zIndex: 50, pointerEvents: 'none' }}>
+              <div style={{ pointerEvents: 'auto' }}>
+                <RaisedHandQueue 
+                  queue={raisedHands} 
+                  onDismiss={dismissHand} 
+                  onClearAll={clearAll} 
+                />
+              </div>
+            </div>
           )}
         </div>
 
         {/* Chat Section */}
         {!isFullscreen && (
-          <div style={{ flex: '0 0 28%', minWidth: '280px', maxWidth: '360px', display: 'flex', flexDirection: 'column', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="live-chat-panel">
             <ChatPanel classId={classId} currentUser={userObj} isTeacher={isTeacher} />
           </div>
         )}

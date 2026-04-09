@@ -45,6 +45,11 @@ const useAuth = () => {
       await updateProfile(result.user, { displayName: name });
       // Email registrations always start as 'student'
       await createUserProfile(result.user.uid, name, 'student', email);
+      
+      // Instantly send an official Firebase Email Verification link
+      const { sendEmailVerification } = require('firebase/auth');
+      await sendEmailVerification(result.user);
+      
       return result.user;
     } catch (err) {
       console.error('[Auth] registerWithEmail error:', err.code, err.message);
@@ -68,6 +73,25 @@ const useAuth = () => {
       console.error('[Auth] loginWithEmail error:', err.code, err.message);
       setError(friendlyError(err.code, err.message));
       return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ─────────────────────────────────────────────
+  // Forgot Password
+  // ─────────────────────────────────────────────
+  const resetPassword = async (email) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { sendPasswordResetEmail } = require('firebase/auth');
+      await sendPasswordResetEmail(auth, email);
+      return true;
+    } catch (err) {
+      console.error('[Auth] resetPassword error:', err.code, err.message);
+      setError(friendlyError(err.code, err.message));
+      return false;
     } finally {
       setLoading(false);
     }
@@ -138,6 +162,7 @@ const useAuth = () => {
     registerWithEmail,
     loginWithEmail,
     loginWithGoogle,
+    resetPassword,
     logout,
   };
 };

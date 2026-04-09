@@ -79,19 +79,18 @@ const Dashboard = () => {
       color: 'white',
     }}>
       {/* ─── Header ─── */}
-      <header style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      <header className="dashboard-header" style={{
         padding: '20px 32px',
         background: 'rgba(255,255,255,0.04)',
         backdropFilter: 'blur(12px)',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
       }}>
         <div>
-          <span style={{ fontSize: '1.4rem', fontWeight: 800, background: 'linear-gradient(135deg, #2F80ED, #56CCF2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ fontSize: '1.4rem', fontWeight: 800, background: 'linear-gradient(135deg, #2F80ED, #56CCF2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center', display: 'block' }}>
             🎓 Learnwood Coaching
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'center' }}>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontWeight: 600 }}>{userProfile?.name}</div>
             <div style={{ fontSize: '0.75rem', color: isTeacher ? '#56CCF2' : '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
