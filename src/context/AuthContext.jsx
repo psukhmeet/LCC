@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
 
 const AuthContext = createContext(null);
@@ -12,34 +12,41 @@ export const useAuthContext = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser]   = useState(null);   // Firebase Auth user
-  const [userProfile, setUserProfile]   = useState(null);   // Firestore profile { name, role, enrolledClasses }
-  const [loading, setLoading]           = useState(true);   // true while hydrating session
+  const [currentUser, setCurrentUser]   = useState(null);
+  const [userProfile, setUserProfile]   = useState(null);
+  const [loading, setLoading]           = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    let profileUnsubscribe = null;
+
+    const authUnsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setCurrentUser(firebaseUser);
-        try {
-          const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
+        
+        // Listen to the user's profile changes dynamically
+        profileUnsubscribe = onSnapshot(doc(db, 'users', firebaseUser.uid), (snap) => {
           if (snap.exists()) {
             setUserProfile(snap.data());
           } else {
-            // Profile doc not yet created (edge case on first login)
             setUserProfile({ name: firebaseUser.displayName || 'User', role: 'student', enrolledClasses: [] });
           }
-        } catch (err) {
-          console.error('Failed to fetch user profile:', err);
-          setUserProfile({ name: 'User', role: 'student', enrolledClasses: [] });
-        }
+          setLoading(false);
+        }, (err) => {
+          console.error('Failed to listen to profile:', err);
+          setLoading(false);
+        });
       } else {
         setCurrentUser(null);
         setUserProfile(null);
+        if (profileUnsubscribe) profileUnsubscribe();
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      authUnsubscribe();
+      if (profileUnsubscribe) profileUnsubscribe();
+    };
   }, []);
 
   const isTeacher = userProfile?.role === 'teacher';
