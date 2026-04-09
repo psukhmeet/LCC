@@ -81,6 +81,8 @@ const useAuth = () => {
       setLoading(true);
       setError(null);
       const provider = new GoogleAuthProvider();
+      provider.addScope('email');
+      provider.addScope('profile');
       provider.setCustomParameters({ prompt: 'select_account' });
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
