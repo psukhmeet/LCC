@@ -37,6 +37,12 @@ io.on('connection', (socket) => {
 
     if (role === 'teacher') {
       rooms[roomId].teacherSocketId = socket.id;
+      // If students are already in the room waiting, tell the newly joined teacher about them
+      // so the teacher can initiate WebRTC offers!
+      const studentsInRoom = Object.entries(rooms[roomId].students);
+      studentsInRoom.forEach(([studentSocketId, studentUserId]) => {
+         socket.emit('user-connected', studentUserId, 'student', studentSocketId);
+      });
     } else {
       rooms[roomId].students[socket.id] = userId;
     }

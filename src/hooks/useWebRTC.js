@@ -78,6 +78,13 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
   useEffect(() => {
     if (!classId || !currentUser) return;
 
+    // Critical Fix: Teacher must wait until they approved camera permissions! 
+    // Otherwise they send empty video streams to students.
+    if (isTeacher && !localStream) {
+      setConnectionStatus('waiting for camera...');
+      return;
+    }
+
     setConnectionStatus('connecting');
     const socket = io(SIGNALING_URL, { transports: ['websocket'], reconnectionAttempts: 5 });
     socketRef.current = socket;
@@ -221,7 +228,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       Object.values(peerConnections.current).forEach(pc => pc.close());
       studentPC.current?.close();
     };
-  }, [classId, currentUser, isTeacher]);
+  }, [classId, currentUser, isTeacher, localStream]);
 
   // ── Audio toggle ──
   const toggleAudio = useCallback(() => {
