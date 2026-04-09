@@ -143,6 +143,7 @@ const friendlyError = (code, rawMessage = '') => {
     'auth/weak-password':           'Password must be at least 6 characters.',
     'auth/too-many-requests':       'Too many attempts. Please wait a moment.',
     'auth/network-request-failed':  'Network error. Check your internet connection.',
+    'auth/account-exists-with-different-credential': 'You already created an account with Email & Password. Please use the Email login instead, or enable account linking in Firebase Console.',
     'auth/operation-not-allowed':   'Email sign-in is not enabled. Enable it in Firebase Console → Authentication → Sign-in methods.',
     'auth/configuration-not-found': 'Firebase Auth is not configured. Enable a sign-in method in Firebase Console.',
     'auth/internal-error':          'Firebase internal error. Check browser console for details.',

@@ -28,7 +28,8 @@ const Dashboard = () => {
       try {
         let q;
         if (isTeacher) {
-          q = query(collection(db, 'classes'), where('teacherId', '==', currentUser.uid));
+          // Teachers can see and start ANY class created by the admin
+          q = query(collection(db, 'classes'));
         } else {
           const enrolled = userProfile?.enrolledClasses || [];
           if (enrolled.length === 0) { setClasses([]); setLoading(false); return; }
