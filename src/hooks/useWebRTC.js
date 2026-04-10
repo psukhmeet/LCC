@@ -1,38 +1,58 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
 
-const buildRTCConfig = () => ({
-  iceTransportPolicy: 'all', // Restored to 'all' for maximum cross-network capability
+const METERED_API_KEY = '1093f5f37a7c0f35b4de598a';
+
+// Fallback config if API fetch fails
+const FALLBACK_RTC_CONFIG = {
   iceServers: [
-    // 1. Core STUN (Google)
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: 'stun:relay.metered.ca:80' },
-    // 2. Custom Metered TURN (Paid/Custom endpoints routing)
     {
       urls: [
         "turn:global.relay.metered.ca:80?transport=udp",
         "turn:global.relay.metered.ca:80?transport=tcp",
         "turn:global.relay.metered.ca:443?transport=tcp",
+        "turns:global.relay.metered.ca:443?transport=tcp",
       ],
-      username:   '1093f5f37a7c0f35b4de598a',
+      username:   METERED_API_KEY,
       credential: 'd50YARtUj0lclGK+',
     },
-    // 3. Fallback OpenRelay (Free Tier explicitly handling common open tier issues)
-    {
-      urls: [
-        "turn:openrelay.metered.ca:80?transport=udp",
-        "turn:openrelay.metered.ca:80?transport=tcp",
-        "turn:openrelay.metered.ca:443?transport=tcp",
-      ],
-      username:   'openrelayproject',
-      credential: 'openrelayproject',
-    }
   ],
   iceCandidatePoolSize: 10,
-});
+};
+
+/**
+ * Fetch fresh TURN credentials from the Metered REST API.
+ * This returns properly authenticated short-lived credentials
+ * that the TURN server will actually accept.
+ */
+const fetchTURNCredentials = async () => {
+  // Try the Metered REST API to get fresh TURN credentials
+  // The app name in the URL comes from your Metered dashboard (e.g. "learnwood")
+  const appName = import.meta.env.VITE_METERED_APP_NAME || 'learnwood';
+  try {
+    const resp = await fetch(
+      `https://${appName}.metered.live/api/v1/turn/credentials?apiKey=${METERED_API_KEY}`
+    );
+    if (!resp.ok) throw new Error(`Metered API responded ${resp.status}`);
+    const iceServers = await resp.json();
+    console.log('[TURN] Fetched fresh credentials from Metered API:', iceServers);
+    return {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        ...iceServers,
+      ],
+      iceCandidatePoolSize: 10,
+    };
+  } catch (err) {
+    console.warn('[TURN] Failed to fetch from Metered API, using fallback:', err.message);
+    return FALLBACK_RTC_CONFIG;
+  }
+};
 
 /**
  * useWebRTC — manages the entire WebRTC lifecycle.
@@ -47,7 +67,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
   const [isVideoOn,    setIsVideoOn]    = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('idle');
-  const [participantCount, setParticipantCount] = useState(0); // idle | connecting | connected | reconnecting | failed
+  const [participantCount, setParticipantCount] = useState(0);
 
   const socketRef         = useRef(null);
   const peerConnections   = useRef({});      // teacher: { socketId → RTCPeerConnection }
@@ -55,8 +75,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
   const studentPC         = useRef(null);    // student: single RTCPeerConnection
   const localStreamRef    = useRef(null);    // keep in sync with state for callbacks
   const pendingCandidates = useRef({});      // queue ICE candidates before remote desc is set
-
-  const rtcConfig = useMemo(() => buildRTCConfig(), []);
+  const rtcConfigRef      = useRef(FALLBACK_RTC_CONFIG); // will be updated with fresh creds
 
   // ── Helper: add buffered ICE candidates after remote desc is set ──
   const flushCandidates = async (pc, socketId) => {
@@ -105,6 +124,13 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
     }
 
     setConnectionStatus('connecting');
+
+    // Fetch fresh TURN credentials before connecting
+    fetchTURNCredentials().then(config => {
+      rtcConfigRef.current = config;
+      console.log('[TURN] RTC Config ready:', JSON.stringify(config.iceServers.map(s => s.urls || s.url), null, 2));
+    });
+
     const socket = io(SIGNALING_URL, { transports: ['websocket', 'polling'], reconnectionAttempts: 5 });
     socketRef.current = socket;
 
@@ -139,7 +165,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       if (!isTeacher || role !== 'student') return;
       console.log(`[WebRTC] Student connected (ID: ${userId}, Socket: ${studentSocketId}). Initializing connection...`);
 
-      const pc = new RTCPeerConnection(rtcConfig);
+      const pc = new RTCPeerConnection(rtcConfigRef.current);
       peerConnections.current[studentSocketId] = pc;
       socketToUser.current[studentSocketId]    = userId;
 
@@ -185,7 +211,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       if (isTeacher) return;
       console.log(`[WebRTC] Received offer from teacher socket: ${payload.callerSocketId}`);
 
-      const pc = new RTCPeerConnection(rtcConfig);
+      const pc = new RTCPeerConnection(rtcConfigRef.current);
       studentPC.current = pc;
 
       pc.ontrack = (evt) => {
