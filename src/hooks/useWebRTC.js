@@ -262,8 +262,8 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
               ];
             }
           }
-        } else if (studentPC.current) {
-          if (studentPC.current.remoteDescription) {
+        } else {
+          if (studentPC.current && studentPC.current.remoteDescription) {
              await studentPC.current.addIceCandidate(new RTCIceCandidate(candidate));
              console.log(`[WebRTC] Added ICE candidate to PC from teacher ${fromSocketId}`);
           } else {

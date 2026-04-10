@@ -88,10 +88,11 @@ const Controls = ({
 
           {showEndConfirm && (
             <div style={{
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999,
+              position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
+              background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999,
             }}>
-              <div style={{ background: '#1e293b', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '16px', padding: '32px', maxWidth: '380px', textAlign: 'center', color: 'white' }}>
+              <div style={{ background: '#1e293b', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '16px', padding: '32px', maxWidth: '380px', textAlign: 'center', color: 'white', margin: 'auto' }}>
                 <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>⚠️</div>
                 <h3 style={{ marginBottom: '8px' }}>End Class for Everyone?</h3>
                 <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '24px' }}>
