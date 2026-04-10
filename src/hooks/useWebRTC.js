@@ -4,16 +4,13 @@ import { io } from 'socket.io-client';
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
 
 const buildRTCConfig = () => ({
-  iceTransportPolicy: 'all', // set to "relay" temporarily to force TURN and verify it works
+  iceTransportPolicy: 'relay', // FORCE TURN
   iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
     {
       urls: [
-        'turn:global.relay.metered.ca:80',
-        'turn:global.relay.metered.ca:80?transport=udp',
-        'turn:global.relay.metered.ca:443',
-        'turn:global.relay.metered.ca:443?transport=tcp',
+        "turn:global.relay.metered.ca:80?transport=udp",
+        "turn:global.relay.metered.ca:80?transport=tcp",
+        "turn:global.relay.metered.ca:443?transport=tcp"
       ],
       username:   '1093f5f37a7c0f35b4de598a',
       credential: 'd50YARtUj0lclGK+',
