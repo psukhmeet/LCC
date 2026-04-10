@@ -4,9 +4,11 @@ import { io } from 'socket.io-client';
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
 
 const buildRTCConfig = () => {
-  const turnUrl = import.meta.env.VITE_TURN_SERVER_URL;
-  const turnUser = import.meta.env.VITE_TURN_USERNAME || 'openrelayproject';
-  const turnCred = import.meta.env.VITE_TURN_CREDENTIAL || 'openrelayproject';
+  // HARDCODED METERED TURN CREDENTIALS (MVP STAGE)
+  // Ensure the VITE_TURN_SERVER_URL points to your actual metered.live domain!
+  const turnUrl = import.meta.env.VITE_TURN_SERVER_URL || 'openrelay.metered.ca';
+  const turnUser = '1093f5f37a7c0f35b4de598a';
+  const turnCred = 'd50YARtUj0lclGK+';
 
   // Base config with guaranteed STUN servers (these are free and highly reliable)
   const config = {
@@ -159,6 +161,10 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
         if (pc.connectionState === 'connected') setConnectionStatus('connected');
       };
 
+      pc.oniceconnectionstatechange = () => {
+        console.log(`[WebRTC] ICE Connection state (Teacher -> Student ${studentSocketId}): ${pc.iceConnectionState}`);
+      };
+
       pc.onsignalingstatechange = () => {
         console.log(`[WebRTC] Signaling state (Teacher -> Student ${studentSocketId}): ${pc.signalingState}`);
       };
@@ -203,6 +209,10 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
         } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
           setConnectionStatus('reconnecting');
         }
+      };
+
+      pc.oniceconnectionstatechange = () => {
+        console.log(`[WebRTC] ICE Connection state (Student -> Teacher): ${pc.iceConnectionState}`);
       };
 
       pc.onsignalingstatechange = () => {
