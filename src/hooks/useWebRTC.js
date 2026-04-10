@@ -4,17 +4,32 @@ import { io } from 'socket.io-client';
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
 
 const buildRTCConfig = () => ({
-  iceTransportPolicy: 'relay', // FORCE TURN
+  iceTransportPolicy: 'all', // Restored to 'all' for maximum cross-network capability
   iceServers: [
+    // 1. Core STUN (Google)
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:relay.metered.ca:80' },
+    // 2. Custom Metered TURN (Paid/Custom endpoints routing)
     {
       urls: [
         "turn:global.relay.metered.ca:80?transport=udp",
         "turn:global.relay.metered.ca:80?transport=tcp",
-        "turn:global.relay.metered.ca:443?transport=tcp"
+        "turn:global.relay.metered.ca:443?transport=tcp",
       ],
       username:   '1093f5f37a7c0f35b4de598a',
       credential: 'd50YARtUj0lclGK+',
     },
+    // 3. Fallback OpenRelay (Free Tier explicitly handling common open tier issues)
+    {
+      urls: [
+        "turn:openrelay.metered.ca:80?transport=udp",
+        "turn:openrelay.metered.ca:80?transport=tcp",
+        "turn:openrelay.metered.ca:443?transport=tcp",
+      ],
+      username:   'openrelayproject',
+      credential: 'openrelayproject',
+    }
   ],
   iceCandidatePoolSize: 10,
 });
