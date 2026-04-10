@@ -169,7 +169,12 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       if (!isTeacher || role !== 'student') return;
       console.log(`[WebRTC] Student connected (ID: ${userId}, Socket: ${studentSocketId}). Initializing connection...`);
 
-      const pc = new RTCPeerConnection(rtcConfigRef.current);
+      const pc = new RTCPeerConnection({
+  ...rtcConfigRef.current,
+  iceTransportPolicy: 'all' // or 'relay' for strict TURN testing
+});
+      pc.addTransceiver('video', { direction: 'recvonly' });
+      pc.addTransceiver('audio', { direction: 'recvonly' });
       peerConnections.current[studentSocketId] = pc;
       socketToUser.current[studentSocketId]    = userId;
 
@@ -201,7 +206,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       };
 
       try {
-        const offer = await pc.createOffer({ offerToReceiveAudio: false, offerToReceiveVideo: false });
+        const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
         console.log(`[WebRTC] Offer created and set as local description. Sending to student ${studentSocketId}`);
         socket.emit('offer', { target: studentSocketId, callerSocketId: socket.id, sdp: pc.localDescription });
@@ -237,10 +242,12 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       pc.onconnectionstatechange = () => {
         console.log(`[WebRTC] Connection state (Student -> Teacher): ${pc.connectionState}`);
         if (pc.connectionState === 'connected') {
-          setConnectionStatus('connected');
-        } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
-          setConnectionStatus('reconnecting');
-        }
+  setConnectionStatus('connected');
+} else if (pc.connectionState === 'failed') {
+  setConnectionStatus('failed');
+} else if (pc.connectionState === 'disconnected') {
+  setConnectionStatus('reconnecting');
+}
       };
 
       pc.oniceconnectionstatechange = () => {
