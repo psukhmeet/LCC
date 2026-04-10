@@ -32,7 +32,7 @@ const FALLBACK_RTC_CONFIG = {
 const fetchTURNCredentials = async () => {
   // Try the Metered REST API to get fresh TURN credentials
   // The app name in the URL comes from your Metered dashboard (e.g. "learnwood")
-  const appName = import.meta.env.VITE_METERED_APP_NAME || 'learnwood';
+  const appName = import.meta.env.VITE_METERED_APP_NAME || 'learnwood_turn';
   try {
     const resp = await fetch(
       `https://${appName}.metered.live/api/v1/turn/credentials?apiKey=${METERED_API_KEY}`
