@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { io } from 'socket.io-client';
 
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
@@ -58,7 +58,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
   const localStreamRef    = useRef(null);    // keep in sync with state for callbacks
   const pendingCandidates = useRef({});      // queue ICE candidates before remote desc is set
 
-  const rtcConfig = buildRTCConfig();
+  const rtcConfig = useMemo(() => buildRTCConfig(), []);
 
   // ── Helper: add buffered ICE candidates after remote desc is set ──
   const flushCandidates = async (pc, socketId) => {
