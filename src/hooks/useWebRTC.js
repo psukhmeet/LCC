@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
 
-const METERED_API_KEY = '1093f5f37a7c0f35b4de598a';
+const METERED_API_KEY = import.meta.env.VITE_METERED_API_KEY || '1093f5f37a7c0f35b4de598a';
 
 // Fallback config if API fetch fails
 const FALLBACK_RTC_CONFIG = {
@@ -125,17 +125,21 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
 
     setConnectionStatus('connecting');
 
-    // Fetch fresh TURN credentials before connecting
-    fetchTURNCredentials().then(config => {
-      rtcConfigRef.current = config;
-      console.log('[TURN] RTC Config ready:', JSON.stringify(config.iceServers.map(s => s.urls || s.url), null, 2));
-    });
-
     const socket = io(SIGNALING_URL, { transports: ['websocket', 'polling'], reconnectionAttempts: 5 });
     socketRef.current = socket;
 
-    socket.on('connect', () => {
+    socket.on('connect', async () => {
       console.log(`[Signaling] Socket connected: ${socket.id}`);
+      
+      // Fetch fresh TURN credentials before joining room
+      try {
+        const config = await fetchTURNCredentials();
+        rtcConfigRef.current = config;
+        console.log('[TURN] Setup complete. Joining room...');
+      } catch (err) {
+        console.warn('[TURN] Using fallback credentials due to fetch error');
+      }
+
       socket.emit('join-room', classId, currentUser.uid, currentUser.role, socket.id);
       if (isTeacher) {
         setConnectionStatus('connected'); // Teacher ready
