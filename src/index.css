@@ -154,7 +154,15 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: nowrap;
 }
+
+@media (max-width: 480px) {
+  .logo span {
+    font-size: 1rem;
+  }
+}
+
 
 .nav-links {
   display: flex;
@@ -208,7 +216,10 @@ h1, h2, h3, h4, h5, h6 {
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .nav-links {
-    gap: 20px;
+    gap: 16px;
+  }
+  .nav-links a {
+    font-size: 0.95rem;
   }
 }
 
@@ -225,11 +236,13 @@ h1, h2, h3, h4, h5, h6 {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 280px;
+    width: 260px;
     height: 100vh;
-    background: white;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     flex-direction: column;
-    padding: 100px 40px;
+    padding: 80px 24px;
     box-shadow: -10px 0 30px rgba(0,0,0,0.1);
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1001;

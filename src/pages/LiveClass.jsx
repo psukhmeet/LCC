@@ -216,6 +216,7 @@ const LiveClass = () => {
         toggleFullscreen={toggleFullscreen} isFullscreen={isFullscreen}
         hasRaisedHand={hasRaisedHand} toggleRaiseHand={toggleRaiseHand}
         raisedHandCount={raisedHands.length}
+        participantCount={participantCount}
       />
 
       {/* ── Class Ended Modal (students) ── */}

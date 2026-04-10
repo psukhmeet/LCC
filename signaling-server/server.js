@@ -50,6 +50,10 @@ io.on('connection', (socket) => {
     // Notify everyone else in the room with the joining socket's id
     socket.to(roomId).emit('user-connected', userId, role, socket.id);
     console.log(`[Room ${roomId}] ${role} ${userId} connected (socket: ${socket.id})`);
+
+    // Broadcast total participant count
+    const count = (rooms[roomId].teacherSocketId ? 1 : 0) + Object.keys(rooms[roomId].students).length;
+    io.to(roomId).emit('participant-count', count);
   });
 
   // ── WebRTC Signaling — route by target socketId ──
@@ -111,6 +115,12 @@ io.on('connection', (socket) => {
     } else {
       delete rooms[currentRoom]?.students[socket.id];
       socket.to(currentRoom).emit('user-disconnected', currentUserId, socket.id);
+      
+      // Broadcast updated count
+      if (rooms[currentRoom]) {
+        const count = (rooms[currentRoom].teacherSocketId ? 1 : 0) + Object.keys(rooms[currentRoom].students).length;
+        io.to(currentRoom).emit('participant-count', count);
+      }
     }
   });
 });

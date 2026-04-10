@@ -12,6 +12,7 @@ const Controls = ({
   toggleFullscreen, isFullscreen,
   hasRaisedHand, toggleRaiseHand,
   raisedHandCount,
+  participantCount,
 }) => {
   const [showEndConfirm, setShowEndConfirm] = useState(false);
 
@@ -48,13 +49,20 @@ const Controls = ({
           />
 
           {/* Divider + hand count */}
-          <div style={{ padding: '0 12px', borderLeft: '1px solid rgba(255,255,255,0.15)', borderRight: '1px solid rgba(255,255,255,0.15)' }}>
+          <div style={{ padding: '0 12px', borderLeft: '1px solid rgba(255,255,255,0.15)' }}>
             <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
               🖐 <strong style={{ color: 'white' }}>{raisedHandCount || 0}</strong> raised
             </span>
           </div>
         </>
       )}
+
+      {/* ── Viewers Count (Universal) ── */}
+      <div style={{ padding: '0 12px', borderLeft: isTeacher ? 'none' : '1px solid rgba(255,255,255,0.15)', borderRight: '1px solid rgba(255,255,255,0.15)' }}>
+        <span style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          👥 <strong style={{ color: 'white' }}>{participantCount || 1}</strong> live
+        </span>
+      </div>
 
       {/* ── Student Controls ── */}
       {!isTeacher && (

@@ -3,41 +3,24 @@ import { io } from 'socket.io-client';
 
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
 
-const buildRTCConfig = () => {
-  // HARDCODED METERED TURN CREDENTIALS (MVP STAGE)
-  // Ensure the VITE_TURN_SERVER_URL points to your actual metered.live domain!
-  const turnUrl = import.meta.env.VITE_TURN_SERVER_URL || 'openrelay.metered.ca';
-  const turnUser = '1093f5f37a7c0f35b4de598a';
-  const turnCred = 'd50YARtUj0lclGK+';
-
-  // Base config with guaranteed STUN servers (these are free and highly reliable)
-  const config = {
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' },
-      { urls: 'stun:stun3.l.google.com:19302' }
-    ],
-    iceCandidatePoolSize: 10,
-  };
-
-  // Add TURN server if provided in environment variables
-  if (turnUrl) {
-    config.iceServers.push({
+const buildRTCConfig = () => ({
+  iceTransportPolicy: 'all', // set to "relay" temporarily to force TURN and verify it works
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    {
       urls: [
-        `turn:${turnUrl}:80`,
-        `turn:${turnUrl}:443`,
-        `turn:${turnUrl}:443?transport=tcp`
+        'turn:global.relay.metered.ca:80',
+        'turn:global.relay.metered.ca:80?transport=udp',
+        'turn:global.relay.metered.ca:443',
+        'turn:global.relay.metered.ca:443?transport=tcp',
       ],
-      username: turnUser,
-      credential: turnCred,
-    });
-  } else {
-    console.warn('[WebRTC Config] No TURN server URL provided. Relay connections may fail in strict NAT networks.');
-  }
-
-  return config;
-};
+      username:   '1093f5f37a7c0f35b4de598a',
+      credential: 'd50YARtUj0lclGK+',
+    },
+  ],
+  iceCandidatePoolSize: 10,
+});
 
 /**
  * useWebRTC — manages the entire WebRTC lifecycle.
@@ -51,7 +34,8 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoOn,    setIsVideoOn]    = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState('idle'); // idle | connecting | connected | reconnecting | failed
+  const [connectionStatus, setConnectionStatus] = useState('idle');
+  const [participantCount, setParticipantCount] = useState(0); // idle | connecting | connected | reconnecting | failed
 
   const socketRef         = useRef(null);
   const peerConnections   = useRef({});      // teacher: { socketId → RTCPeerConnection }
@@ -134,6 +118,10 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       socket.emit('join-room', classId, currentUser.uid, currentUser.role, socket.id);
     });
 
+    socket.on('participant-count', (count) => {
+      setParticipantCount(count);
+    });
+
     // ── Teacher: a student joined → create offer ──
     socket.on('user-connected', async (userId, role, studentSocketId) => {
       if (!isTeacher || role !== 'student') return;
@@ -149,7 +137,8 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
 
       pc.onicecandidate = (evt) => {
         if (evt.candidate) {
-          console.log(`[WebRTC] Teacher gathered ICE candidate, sending to student: ${studentSocketId}`);
+          const type = evt.candidate.candidate.split(' ')[7] || '?';
+          console.log(`[ICE] Teacher candidate type=${type}:`, evt.candidate.candidate);
           socket.emit('ice-candidate', { target: studentSocketId, candidate: evt.candidate });
         } else {
           console.log(`[WebRTC] Teacher finished gathering ICE candidates for ${studentSocketId}`);
@@ -195,7 +184,8 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
 
       pc.onicecandidate = (evt) => {
         if (evt.candidate) {
-          console.log(`[WebRTC] Student gathered ICE candidate, sending to teacher: ${payload.callerSocketId}`);
+          const type = evt.candidate.candidate.split(' ')[7] || '?';
+          console.log(`[ICE] Student candidate type=${type}:`, evt.candidate.candidate);
           socket.emit('ice-candidate', { target: payload.callerSocketId, candidate: evt.candidate });
         } else {
           console.log(`[WebRTC] Student finished gathering ICE candidates`);
@@ -393,6 +383,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
     isVideoOn,
     isScreenSharing,
     connectionStatus,
+    participantCount,
     socket: socketRef.current,
     toggleAudio,
     toggleVideo,

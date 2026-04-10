@@ -74,9 +74,24 @@ const Navbar = () => {
           </li>
 
           <li className="mobile-only">
-            <Link to="/tutors" className="mobile-profile-link" onClick={close}>
+            <Link to="/tutors" className="mobile-profile-link" onClick={close} style={{ marginBottom: '15px' }}>
               <UserCircle2 size={24} /> Our Tutors
             </Link>
+            {!loading && currentUser && (
+              <button 
+                onClick={async () => {
+                  const { signOut } = await import('firebase/auth');
+                  const { auth } = await import('../../firebase/config');
+                  await signOut(auth);
+                  navigate('/login');
+                  close();
+                }}
+                className="mobile-profile-link"
+                style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 600, padding: 0, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '1.2rem' }}
+              >
+                Sign Out
+              </button>
+            )}
           </li>
         </ul>
 
