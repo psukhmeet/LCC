@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
 
   // ── WebRTC Signaling — route by target socketId ──
   socket.on('offer', (payload) => {
-    // payload: { target: socketId, callerSocketId, sdp }
+    console.log(`[WebRTC] Offer from ${socket.id} -> to ${payload.target}`);
     io.to(payload.target).emit('offer', {
       ...payload,
       callerSocketId: socket.id,
@@ -62,7 +62,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('answer', (payload) => {
-    // payload: { target: socketId, callerSocketId, sdp }
+    console.log(`[WebRTC] Answer from ${socket.id} -> to ${payload.target}`);
     io.to(payload.target).emit('answer', {
       ...payload,
       callerSocketId: socket.id,
@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('ice-candidate', (incoming) => {
-    // incoming: { target: socketId, candidate }
+    console.log(`[WebRTC] ICE candidate from ${socket.id} -> to ${incoming.target}`);
     io.to(incoming.target).emit('ice-candidate', {
       fromSocketId: socket.id,
       candidate: incoming.candidate,

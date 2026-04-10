@@ -3,32 +3,45 @@ import { io } from 'socket.io-client';
 
 const SIGNALING_URL = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:5000';
 
-const buildRTCConfig = () => ({
-  iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: `stun:${import.meta.env.VITE_TURN_SERVER_URL}:80` },
-    {
+const buildRTCConfig = () => {
+  const turnUrl = import.meta.env.VITE_TURN_SERVER_URL;
+  const turnUser = import.meta.env.VITE_TURN_USERNAME || 'openrelayproject';
+  const turnCred = import.meta.env.VITE_TURN_CREDENTIAL || 'openrelayproject';
+
+  // Base config with guaranteed STUN servers (these are free and highly reliable)
+  const config = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:stun3.l.google.com:19302' }
+    ],
+    iceCandidatePoolSize: 10,
+  };
+
+  // Add TURN server if provided in environment variables
+  if (turnUrl) {
+    config.iceServers.push({
       urls: [
-        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:80`,
-        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:443`,
-        `turn:${import.meta.env.VITE_TURN_SERVER_URL}:443?transport=tcp`,
+        `turn:${turnUrl}:80`,
+        `turn:${turnUrl}:443`,
+        `turn:${turnUrl}:443?transport=tcp`
       ],
-      username:   import.meta.env.VITE_TURN_USERNAME   || 'openrelayproject',
-      credential: import.meta.env.VITE_TURN_CREDENTIAL || 'openrelayproject',
-    },
-  ],
-  iceCandidatePoolSize: 10,
-});
+      username: turnUser,
+      credential: turnCred,
+    });
+  } else {
+    console.warn('[WebRTC Config] No TURN server URL provided. Relay connections may fail in strict NAT networks.');
+  }
+
+  return config;
+};
 
 /**
  * useWebRTC — manages the entire WebRTC lifecycle.
  *
  * Teacher acts as broadcaster: creates a PeerConnection per student.
  * Student acts as receiver:   creates one PeerConnection to the teacher.
- *
- * Key fix over MVP: we maintain a socketId↔userId map so ICE candidates
- * reach the correct RTCPeerConnection on the teacher side.
  */
 const useWebRTC = (classId, currentUser, isTeacher) => {
   const [localStream,  setLocalStream]  = useState(null);
@@ -50,8 +63,16 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
   // ── Helper: add buffered ICE candidates after remote desc is set ──
   const flushCandidates = async (pc, socketId) => {
     const queued = pendingCandidates.current[socketId] || [];
+    if (queued.length > 0) {
+       console.log(`[WebRTC] Flushing ${queued.length} queued ICE candidates for ${socketId}`);
+    }
     for (const c of queued) {
-      try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch {}
+      try { 
+        await pc.addIceCandidate(new RTCIceCandidate(c)); 
+        console.log(`[WebRTC] Successfully added queued ICE candidate for ${socketId}`);
+      } catch (e) {
+        console.error(`[WebRTC] Failed to add queued candidate for ${socketId}:`, e);
+      }
     }
     delete pendingCandidates.current[socketId];
   };
@@ -64,6 +85,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         setLocalStream(stream);
         localStreamRef.current = stream;
+        console.log('[WebRTC] Local media stream obtained successfully.');
       } catch (err) {
         console.error('[WebRTC] Camera/mic access denied:', err);
         setConnectionStatus('failed');
@@ -79,8 +101,6 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
   useEffect(() => {
     if (!classId || !currentUser) return;
 
-    // Critical Fix: Teacher must wait until they approved camera permissions! 
-    // Otherwise they send empty video streams to students.
     if (isTeacher && !localStream) {
       setConnectionStatus('waiting for camera...');
       return;
@@ -91,22 +111,31 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
     socketRef.current = socket;
 
     socket.on('connect', () => {
+      console.log(`[Signaling] Socket connected: ${socket.id}`);
       socket.emit('join-room', classId, currentUser.uid, currentUser.role, socket.id);
       if (isTeacher) {
-        setConnectionStatus('connected'); // Teacher is ready and waiting for students
+        setConnectionStatus('connected'); // Teacher ready
+        console.log(`[Signaling] Teacher joined room ${classId}, waiting for students...`);
       } else {
-        setConnectionStatus('waiting'); // Student waiting for WebRTC
+        setConnectionStatus('waiting'); // Student waiting
+        console.log(`[Signaling] Student joined room ${classId}, waiting for WebRTC offer...`);
       }
     });
 
-    socket.on('disconnect', () => setConnectionStatus('reconnecting'));
+    socket.on('disconnect', () => {
+      console.warn('[Signaling] Socket disconnected');
+      setConnectionStatus('reconnecting');
+    });
+
     socket.on('reconnect',  () => {
+      console.log('[Signaling] Socket reconnected');
       socket.emit('join-room', classId, currentUser.uid, currentUser.role, socket.id);
     });
 
     // ── Teacher: a student joined → create offer ──
     socket.on('user-connected', async (userId, role, studentSocketId) => {
       if (!isTeacher || role !== 'student') return;
+      console.log(`[WebRTC] Student connected (ID: ${userId}, Socket: ${studentSocketId}). Initializing connection...`);
 
       const pc = new RTCPeerConnection(rtcConfig);
       peerConnections.current[studentSocketId] = pc;
@@ -118,17 +147,26 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
 
       pc.onicecandidate = (evt) => {
         if (evt.candidate) {
+          console.log(`[WebRTC] Teacher gathered ICE candidate, sending to student: ${studentSocketId}`);
           socket.emit('ice-candidate', { target: studentSocketId, candidate: evt.candidate });
+        } else {
+          console.log(`[WebRTC] Teacher finished gathering ICE candidates for ${studentSocketId}`);
         }
       };
 
       pc.onconnectionstatechange = () => {
+        console.log(`[WebRTC] Connection state (Teacher -> Student ${studentSocketId}): ${pc.connectionState}`);
         if (pc.connectionState === 'connected') setConnectionStatus('connected');
+      };
+
+      pc.onsignalingstatechange = () => {
+        console.log(`[WebRTC] Signaling state (Teacher -> Student ${studentSocketId}): ${pc.signalingState}`);
       };
 
       try {
         const offer = await pc.createOffer({ offerToReceiveAudio: false, offerToReceiveVideo: false });
         await pc.setLocalDescription(offer);
+        console.log(`[WebRTC] Offer created and set as local description. Sending to student ${studentSocketId}`);
         socket.emit('offer', { target: studentSocketId, callerSocketId: socket.id, sdp: pc.localDescription });
       } catch (err) {
         console.error('[WebRTC] Offer creation failed:', err);
@@ -138,22 +176,28 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
     // ── Student: receives offer from teacher ──
     socket.on('offer', async (payload) => {
       if (isTeacher) return;
+      console.log(`[WebRTC] Received offer from teacher socket: ${payload.callerSocketId}`);
 
       const pc = new RTCPeerConnection(rtcConfig);
       studentPC.current = pc;
 
       pc.ontrack = (evt) => {
+        console.log('[WebRTC] Received remote track from teacher!');
         setRemoteStream(evt.streams[0]);
         setConnectionStatus('connected');
       };
 
       pc.onicecandidate = (evt) => {
         if (evt.candidate) {
+          console.log(`[WebRTC] Student gathered ICE candidate, sending to teacher: ${payload.callerSocketId}`);
           socket.emit('ice-candidate', { target: payload.callerSocketId, candidate: evt.candidate });
+        } else {
+          console.log(`[WebRTC] Student finished gathering ICE candidates`);
         }
       };
 
       pc.onconnectionstatechange = () => {
+        console.log(`[WebRTC] Connection state (Student -> Teacher): ${pc.connectionState}`);
         if (pc.connectionState === 'connected') {
           setConnectionStatus('connected');
         } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
@@ -161,11 +205,19 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
         }
       };
 
+      pc.onsignalingstatechange = () => {
+        console.log(`[WebRTC] Signaling state (Student -> Teacher): ${pc.signalingState}`);
+      };
+
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+        console.log('[WebRTC] Successfully set remote description from offer');
+        
         await flushCandidates(pc, payload.callerSocketId);
+        
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
+        console.log(`[WebRTC] Answer created and set. Sending to teacher: ${payload.callerSocketId}`);
         socket.emit('answer', { target: payload.callerSocketId, callerSocketId: socket.id, sdp: pc.localDescription });
       } catch (err) {
         console.error('[WebRTC] Answer creation failed:', err);
@@ -175,10 +227,16 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
     // ── Teacher: receives answer from student ──
     socket.on('answer', async (payload) => {
       if (!isTeacher) return;
+      console.log(`[WebRTC] Received answer from student socket: ${payload.callerSocketId}`);
+      
       const pc = peerConnections.current[payload.callerSocketId];
-      if (!pc) return;
+      if (!pc) {
+        console.warn(`[WebRTC] Received answer for unknown student PC: ${payload.callerSocketId}`);
+        return;
+      }
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+        console.log(`[WebRTC] Teacher set remote description array. Processing buffered candidates...`);
         await flushCandidates(pc, payload.callerSocketId);
         setConnectionStatus('connected');
       } catch (err) {
@@ -188,13 +246,16 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
 
     // ── ICE candidates (both sides) ──
     socket.on('ice-candidate', async ({ fromSocketId, candidate }) => {
+      console.log(`[WebRTC] Ice candidate received from network: ${fromSocketId}`);
       try {
         if (isTeacher) {
           const pc = peerConnections.current[fromSocketId];
           if (pc) {
             if (pc.remoteDescription) {
               await pc.addIceCandidate(new RTCIceCandidate(candidate));
+              console.log(`[WebRTC] Added ICE candidate to PC for student ${fromSocketId}`);
             } else {
+              console.log(`[WebRTC] Buffering ICE candidate for student ${fromSocketId}`);
               pendingCandidates.current[fromSocketId] = [
                 ...(pendingCandidates.current[fromSocketId] || []),
                 candidate,
@@ -203,12 +264,15 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
           }
         } else if (studentPC.current) {
           if (studentPC.current.remoteDescription) {
-            await studentPC.current.addIceCandidate(new RTCIceCandidate(candidate));
+             await studentPC.current.addIceCandidate(new RTCIceCandidate(candidate));
+             console.log(`[WebRTC] Added ICE candidate to PC from teacher ${fromSocketId}`);
           } else {
-            pendingCandidates.current['teacher'] = [
-              ...(pendingCandidates.current['teacher'] || []),
-              candidate,
-            ];
+             console.log(`[WebRTC] Buffering ICE candidate from teacher ${fromSocketId}`);
+             // FIX: Buffer using the actual socket ID (fromSocketId), not literal string 'teacher' !
+             pendingCandidates.current[fromSocketId] = [
+                ...(pendingCandidates.current[fromSocketId] || []),
+                candidate,
+             ];
           }
         }
       } catch (err) {
@@ -218,6 +282,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
 
     // ── Student disconnected ──
     socket.on('user-disconnected', (userId, studentSocketId) => {
+      console.log(`[Signaling] User disconnected: ${userId} (${studentSocketId})`);
       if (isTeacher && peerConnections.current[studentSocketId]) {
         peerConnections.current[studentSocketId].close();
         delete peerConnections.current[studentSocketId];
@@ -227,6 +292,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
 
     // ── Class ended by teacher ──
     socket.on('class-ended', () => {
+      console.log(`[Signaling] Class marked as ended by teacher`);
       setConnectionStatus('failed');
     });
 
@@ -235,6 +301,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       Object.values(peerConnections.current).forEach(pc => pc.close());
       studentPC.current?.close();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId, currentUser, isTeacher, localStream]);
 
   // ── Audio toggle ──
