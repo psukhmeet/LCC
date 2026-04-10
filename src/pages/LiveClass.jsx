@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/config';
@@ -16,11 +16,11 @@ const LiveClass = () => {
   const joinTimeRef = useRef(null);
 
   // ── Merge Firebase user + Firestore profile for hooks ──
-  const userObj = currentUser ? {
+  const userObj = useMemo(() => (currentUser ? {
     uid:  currentUser.uid,
     name: userProfile?.name || currentUser.displayName || 'User',
     role: userProfile?.role || 'student',
-  } : null;
+  } : null), [currentUser, userProfile]);
 
   // ── WebRTC ──
   const {

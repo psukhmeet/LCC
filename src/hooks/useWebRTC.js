@@ -302,7 +302,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       studentPC.current?.close();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, currentUser, isTeacher, localStream]);
+  }, [classId, currentUser?.uid, isTeacher, localStream]);
 
   // ── Audio toggle ──
   const toggleAudio = useCallback(() => {
