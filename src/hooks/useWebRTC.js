@@ -8,18 +8,29 @@ const METERED_API_KEY = import.meta.env.VITE_METERED_API_KEY || '1093f5f37a7c0f3
 // Fallback config if API fetch fails
 const FALLBACK_RTC_CONFIG = {
   iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
     {
-      urls: [
-        "turn:global.relay.metered.ca:80?transport=udp",
-        "turn:global.relay.metered.ca:80?transport=tcp",
-        "turn:global.relay.metered.ca:443?transport=tcp",
-        "turns:global.relay.metered.ca:443?transport=tcp",
-      ],
-      username:   METERED_API_KEY,
-      credential: 'd50YARtUj0lclGK+',
+      urls: "stun:stun.relay.metered.ca:80"
     },
+    {
+      urls: "turn:standard.relay.metered.ca:80",
+      username: "1093f5f37a7c0f35b4de598a",
+      credential: "d50YARtUj0lclGK+"
+    },
+    {
+      urls: "turn:standard.relay.metered.ca:80?transport=tcp",
+      username: "1093f5f37a7c0f35b4de598a",
+      credential: "d50YARtUj0lclGK+"
+    },
+    {
+      urls: "turn:standard.relay.metered.ca:443",
+      username: "1093f5f37a7c0f35b4de598a",
+      credential: "d50YARtUj0lclGK+"
+    },
+    {
+      urls: "turns:standard.relay.metered.ca:443?transport=tcp",
+      username: "1093f5f37a7c0f35b4de598a",
+      credential: "d50YARtUj0lclGK+"
+    }
   ],
   iceCandidatePoolSize: 10,
 };
@@ -32,7 +43,7 @@ const FALLBACK_RTC_CONFIG = {
 const fetchTURNCredentials = async () => {
   // Try the Metered REST API to get fresh TURN credentials
   // The app name in the URL comes from your Metered dashboard (e.g. "learnwood")
-  const appName = import.meta.env.VITE_METERED_APP_NAME || 'learnwood_turn';
+  const appName = import.meta.env.VITE_METERED_APP_NAME || 'learnwood';
   try {
     const resp = await fetch(
       `https://${appName}.metered.live/api/v1/turn/credentials?apiKey=${METERED_API_KEY}`
@@ -131,14 +142,9 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
     socket.on('connect', async () => {
       console.log(`[Signaling] Socket connected: ${socket.id}`);
       
-      // Fetch fresh TURN credentials before joining room
-      try {
-        const config = await fetchTURNCredentials();
-        rtcConfigRef.current = config;
-        console.log('[TURN] Setup complete. Joining room...');
-      } catch (err) {
-        console.warn('[TURN] Using fallback credentials due to fetch error');
-      }
+      // Force usage of the fallback config (Manual Patch)
+      rtcConfigRef.current = FALLBACK_RTC_CONFIG;
+      console.log('[TURN] Manual configuration set (Force Relay).');
 
       socket.emit('join-room', classId, currentUser.uid, currentUser.role, socket.id);
       if (isTeacher) {
@@ -170,11 +176,9 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       console.log(`[WebRTC] Student connected (ID: ${userId}, Socket: ${studentSocketId}). Initializing connection...`);
 
       const pc = new RTCPeerConnection({
-  ...rtcConfigRef.current,
-  iceTransportPolicy: 'all' // or 'relay' for strict TURN testing
-});
-      pc.addTransceiver('video', { direction: 'recvonly' });
-      pc.addTransceiver('audio', { direction: 'recvonly' });
+        ...rtcConfigRef.current,
+        iceTransportPolicy: 'relay'
+      });
       peerConnections.current[studentSocketId] = pc;
       socketToUser.current[studentSocketId]    = userId;
 
@@ -206,7 +210,7 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       };
 
       try {
-        const offer = await pc.createOffer();
+        const offer = await pc.createOffer({ offerToReceiveAudio: false, offerToReceiveVideo: false });
         await pc.setLocalDescription(offer);
         console.log(`[WebRTC] Offer created and set as local description. Sending to student ${studentSocketId}`);
         socket.emit('offer', { target: studentSocketId, callerSocketId: socket.id, sdp: pc.localDescription });
@@ -220,11 +224,18 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       if (isTeacher) return;
       console.log(`[WebRTC] Received offer from teacher socket: ${payload.callerSocketId}`);
 
-      const pc = new RTCPeerConnection(rtcConfigRef.current);
+      const pc = new RTCPeerConnection({
+        ...rtcConfigRef.current,
+        iceTransportPolicy: 'relay'
+      });
+
+      // ✅ ADD THIS
+      pc.addTransceiver('video', { direction: 'recvonly' });
+      pc.addTransceiver('audio', { direction: 'recvonly' });
       studentPC.current = pc;
 
       pc.ontrack = (evt) => {
-        console.log('[WebRTC] Received remote track from teacher!');
+        console.log('🎥 Video received from teacher');
         setRemoteStream(evt.streams[0]);
         setConnectionStatus('connected');
       };
@@ -242,12 +253,10 @@ const useWebRTC = (classId, currentUser, isTeacher) => {
       pc.onconnectionstatechange = () => {
         console.log(`[WebRTC] Connection state (Student -> Teacher): ${pc.connectionState}`);
         if (pc.connectionState === 'connected') {
-  setConnectionStatus('connected');
-} else if (pc.connectionState === 'failed') {
-  setConnectionStatus('failed');
-} else if (pc.connectionState === 'disconnected') {
-  setConnectionStatus('reconnecting');
-}
+          setConnectionStatus('connected');
+        } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
+          setConnectionStatus('reconnecting');
+        }
       };
 
       pc.oniceconnectionstatechange = () => {
