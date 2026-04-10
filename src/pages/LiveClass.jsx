@@ -26,7 +26,7 @@ const LiveClass = () => {
   const {
     localStream, remoteStream,
     isAudioMuted, isVideoOn, isScreenSharing,
-    connectionStatus,
+    connectionStatus, participantCount,
     toggleAudio, toggleVideo, toggleScreenShare,
     endClass, stopLocalStream,
   } = useWebRTC(classId, userObj, isTeacher);
