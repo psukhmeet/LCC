@@ -7,7 +7,7 @@ import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, setDoc, u
 import { db } from '../../firebase/config';
 
 const AdminDashboard = () => {
-  const { data, updateData, updateTutor, addTutor, removeTutor, removeMessage, resetToDefault } = useContext(DataContext);
+  const { data, updateData, updateCategory, updateTutor, addTutor, removeTutor, removeMessage, resetToDefault } = useContext(DataContext);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('general');
   const [localData, setLocalData] = useState(data);
@@ -29,14 +29,10 @@ const AdminDashboard = () => {
   };
 
   const handleSave = () => {
-    // Only saving general and stats directly here; tutors are handled separately for UX
-    Object.keys(localData.general).forEach(key => {
-      updateData('general', key, localData.general[key]);
-    });
-    Object.keys(localData.stats).forEach(key => {
-      updateData('stats', key, localData.stats[key]);
-    });
-    alert('Changes saved temporarily to local storage. They will persist in your browser.');
+    // Save whole objects at once for better reliability instead of looping
+    updateCategory('general', localData.general);
+    updateCategory('stats', localData.stats);
+    alert('Changes saved successfully! They will now reflect across the website.');
   };
 
   const SidebarButton = ({ id, icon: Icon, label }) => (
@@ -103,18 +99,56 @@ const AdminDashboard = () => {
               <textarea className="glass" style={{ width: '100%', padding: '15px', height: '100px' }} 
                 value={localData.general.heroSubtext} onChange={(e) => setLocalData({...localData, general: {...localData.general, heroSubtext: e.target.value}})}></textarea>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>WhatsApp Phone</label>
-                <input type="text" className="glass" style={{ width: '100%', padding: '15px' }} 
-                  value={localData.general.phone} onChange={(e) => setLocalData({...localData, general: {...localData.general, phone: e.target.value}})} />
-              </div>
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Contact Email</label>
-                <input type="email" className="glass" style={{ width: '100%', padding: '15px' }} 
-                  value={localData.general.email} onChange={(e) => setLocalData({...localData, general: {...localData.general, email: e.target.value}})} />
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <label style={{ fontWeight: 'bold' }}>Contact Phone Numbers</label>
+              {(localData.general.phoneNumbers || []).map((p, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '10px' }}>
+                  <input type="text" className="glass" style={{ width: '160px', padding: '12px' }} 
+                    placeholder="Country"
+                    value={p.country} 
+                    onChange={(e) => {
+                      const newPhones = [...localData.general.phoneNumbers];
+                      newPhones[idx].country = e.target.value;
+                      setLocalData({...localData, general: {...localData.general, phoneNumbers: newPhones}});
+                    }} 
+                  />
+                  <input type="text" className="glass" style={{ flex: 1, padding: '12px' }} 
+                    placeholder="Number"
+                    value={p.number} 
+                    onChange={(e) => {
+                      const newPhones = [...localData.general.phoneNumbers];
+                      newPhones[idx].number = e.target.value;
+                      setLocalData({...localData, general: {...localData.general, phoneNumbers: newPhones}});
+                    }} 
+                  />
+                  <button 
+                    onClick={() => {
+                      const newPhones = localData.general.phoneNumbers.filter((_, i) => i !== idx);
+                      setLocalData({...localData, general: {...localData.general, phoneNumbers: newPhones}});
+                    }}
+                    className="btn-primary" style={{ background: '#ef4444', padding: '10px 15px' }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button 
+                onClick={() => {
+                  const newPhones = [...(localData.general.phoneNumbers || []), { country: '', number: '' }];
+                  setLocalData({...localData, general: {...localData.general, phoneNumbers: newPhones}});
+                }}
+                className="btn-outline" style={{ padding: '8px 15px', fontSize: '0.85rem' }}
+              >
+                + Add Another Number
+              </button>
             </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Contact Email</label>
+              <input type="email" className="glass" style={{ width: '100%', padding: '15px' }} 
+                value={localData.general.email} onChange={(e) => setLocalData({...localData, general: {...localData.general, email: e.target.value}})} />
+            </div>
+
           </motion.div>
         )}
 

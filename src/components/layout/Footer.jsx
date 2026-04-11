@@ -12,7 +12,7 @@ const Footer = () => {
             <a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" style={{ color: '#94A3B8', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}>
               <Youtube size={24} />
             </a>
-            <a href="https://wa.me/+917814877280" target="_blank" rel="noopener noreferrer" style={{ color: '#94A3B8', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}>
+            <a href="https://wa.me/917814877280" target="_blank" rel="noopener noreferrer" style={{ color: '#94A3B8', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}>
               <MessageCircle size={24} />
             </a>
             <a href="https://www.instagram.com/learnwoodcoachingclasses" target="_blank" rel="noopener noreferrer" style={{ color: '#94A3B8', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, MapPin, Phone, Mail, CheckCircle } from 'lucide-react';
+import { Send, Phone, Mail, CheckCircle } from 'lucide-react';
 import { useContext } from 'react';
 import { DataContext } from '../context/DataContext';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -101,45 +101,43 @@ const Contact = () => {
           </form>
         </motion.div>
 
-        {/* Contact Info & Map */}
+        {/* Contact Info */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '30px', justifyContent: 'center' }}
         >
-          <div className="glass" style={{ padding: '30px', borderRadius: '20px' }}>
-            <h3 style={{ marginBottom: '20px', fontSize: '1.5rem' }}>Contact Information</h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--text-light)' }}>
-                <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%' }}><MapPin size={20} /></div>
-                <span>{data.general.address}</span>
+          <div className="glass" style={{ padding: '40px', borderRadius: '20px' }}>
+            <h3 style={{ marginBottom: '30px', fontSize: '1.8rem' }}>Contact Information</h3>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '30px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', color: 'var(--text-light)' }}>
+                <div style={{ background: 'var(--primary)', color: 'white', padding: '12px', borderRadius: '50%', flexShrink: 0 }}><Phone size={24} /></div>
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-dark)', marginBottom: '8px', fontSize: '1.1rem' }}>Phone Numbers</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {(data.general.phoneNumbers || []).map((p, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: '40px' }}>
+                        <span style={{ fontWeight: 600 }}>{p.country}:</span>
+                        <a href={`tel:${p.number.replace(/\s+/g, '')}`} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 700 }}>{p.number}</a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </li>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--text-light)' }}>
-                <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%' }}><Phone size={20} /></div>
-                <span>{data.general.phone}</span>
-              </li>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--text-light)' }}>
-                <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%' }}><Mail size={20} /></div>
-                <span>{data.general.email}</span>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '20px', color: 'var(--text-light)' }}>
+                <div style={{ background: 'var(--primary)', color: 'white', padding: '12px', borderRadius: '50%', flexShrink: 0 }}><Mail size={24} /></div>
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-dark)', marginBottom: '4px', fontSize: '1.1rem' }}>Email Address</div>
+                  <a href={`mailto:${data.general.email}`} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 700 }}>{data.general.email}</a>
+                </div>
               </li>
             </ul>
-          </div>
-
-          <div style={{ width: '100%', height: '250px', borderRadius: '20px', overflow: 'hidden' }}>
-            <iframe
-              src={data.general.mapUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
           </div>
         </motion.div>
       </div>
     </div>
   );
 };
+
 
 export default Contact;

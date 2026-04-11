@@ -4,9 +4,11 @@ import { DataContext } from '../../context/DataContext';
 
 const WhatsAppCTA = () => {
   const { data } = useContext(DataContext);
-  const phoneNumber = data.general.phone;
+  // Default to the first number (India)
+  const phoneNumber = data.general.phoneNumbers?.[0]?.number || '7814877280';
+  const cleanNumber = phoneNumber.replace(/\s+/g, '');
   const message = encodeURIComponent("Hello, I want to join Learnwood Coaching Classes.");
-  const waLink = `https://wa.me/${phoneNumber}?text=${message}`;
+  const waLink = `https://wa.me/${cleanNumber}?text=${message}`;
 
   return (
     <div style={{ position: 'fixed', bottom: '30px', right: '30px', zIndex: 9999 }}>
