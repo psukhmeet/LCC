@@ -26,7 +26,7 @@ const About = () => {
         animate={{ opacity: 1, y: 0 }}
       >
         <h1 className="heading-xl">
-          About <span className="text-gradient">Learnwood Coaching Classes</span>
+          About <span className="text-gradient">LCC</span>
         </h1>
 
         <div className="glass about-card">
