@@ -21,7 +21,6 @@ body {
   font-family: var(--font-body);
   background-color: var(--bg-color);
   color: var(--text-dark);
-  cursor: none;
   overflow-x: hidden;
 }
 
@@ -29,7 +28,6 @@ a,
 button,
 input,
 textarea {
-  cursor: none;
 }
 
 h1,
@@ -236,7 +234,6 @@ h6 {
 
 @media (max-width: 768px) {
   body {
-    cursor: auto !important;
     /* Disable custom cursor on mobile for better UX */
   }
 

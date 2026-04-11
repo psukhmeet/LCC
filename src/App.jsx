@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import CustomCursor from './components/ui/CustomCursor';
 import WhatsAppCTA from './components/ui/WhatsAppCTA';
 import ProtectedRoute from './components/ui/ProtectedRoute';
 import { DataProvider } from './context/DataContext';
@@ -79,7 +78,6 @@ function App() {
     <AuthProvider>
       <DataProvider>
         <Router>
-          <CustomCursor />
           <AppContent />
         </Router>
       </DataProvider>
