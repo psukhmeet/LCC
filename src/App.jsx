@@ -15,6 +15,7 @@ import TermsConditions from './pages/TermsConditions';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import LiveClass from './pages/LiveClass';
+import About from './pages/About';
 
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -37,6 +38,7 @@ const AppContent = () => {
         <Routes>
           {/* ── Public ── */}
           <Route path="/"                 element={<Home />} />
+          <Route path="/about"            element={<About />} />
           <Route path="/tutors"           element={<Tutors />} />
           <Route path="/contact"          element={<Contact />} />
           <Route path="/privacy-policy"   element={<PrivacyPolicy />} />

@@ -31,8 +31,9 @@ const Footer = () => {
           <h4 style={{ fontSize: '1.2rem', margin: '0 0 20px 0', color: 'white', fontFamily: 'var(--font-heading)' }}>Quick Links</h4>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', padding: 0 }}>
             <li><Link to="/" style={{ color: '#94A3B8', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Home</Link></li>
+            <li><Link to="/about" style={{ color: '#94A3B8', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>About Us</Link></li>
             <li><Link to="/tutors" style={{ color: '#94A3B8', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Our Tutors</Link></li>
-            <li><Link to="/contact" style={{ color: '#94A3B8', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Contact Us</Link></li>
+            <li><Link to="/contact" style={{ color: '#94A3B8', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Contact</Link></li>
             <li><Link to="https://www.youtube.com/@LearnwoodCoachingClasses" target="blank" style={{ color: '#94A3B8', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>YouTube</Link></li>
           </ul>
         </div>

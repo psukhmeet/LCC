@@ -38,7 +38,7 @@ const Navbar = () => {
           <li><Link to="/" onClick={close}>Home</Link></li>
           <li><Link to="/contact" onClick={close}>Contact</Link></li>
           <li><Link to="https://www.youtube.com/@LearnwoodCoachingClasses" target="blank" onClick={close}>YouTube</Link></li>
-          <li><Link to="/contact" onClick={close}>About Us</Link></li>
+          <li><Link to="/about" onClick={close}>About Us</Link></li>
 
           {/* ── Live Classes CTA ── */}
           <li>
