@@ -27,6 +27,10 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/classes/$(classId)).data.teacherId == request.auth.uid;
     }
 
+    function canManageClass(classId) {
+      return isTeacher() || isClassTeacher(classId);
+    }
+
     // ─── Users collection ────────────────────────────────────────────────
     match /users/{userId} {
       // Anyone authenticated can read their own profile
@@ -44,32 +48,32 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       // Only teachers can create classes
       allow create: if isAuthenticated() && isTeacher();
-      // Only the assigned teacher can update (e.g., toggle isLive)
-      allow update: if isAuthenticated() && isClassTeacher(classId);
+      // Any authorized teacher can manage class status
+      allow update: if isAuthenticated() && canManageClass(classId);
       allow delete: if false;
 
       // ── Messages subcollection ──────────────────────────────────────
       match /messages/{messageId} {
         // Only enrolled students or the class teacher can read messages
         allow read: if isAuthenticated() &&
-                       (isClassTeacher(classId) || isEnrolled(classId));
+                       (canManageClass(classId) || isEnrolled(classId));
 
         // Enrolled students and teacher can send messages
         allow create: if isAuthenticated() &&
-                         (isClassTeacher(classId) || isEnrolled(classId)) &&
+                         (canManageClass(classId) || isEnrolled(classId)) &&
                          request.resource.data.senderId == request.auth.uid &&
                          request.resource.data.isPinned == false;
 
         // Only the class teacher can pin or delete messages
-        allow update: if isAuthenticated() && isClassTeacher(classId) &&
+        allow update: if isAuthenticated() && canManageClass(classId) &&
                          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isPinned']);
-        allow delete: if isAuthenticated() && isClassTeacher(classId);
+        allow delete: if isAuthenticated() && canManageClass(classId);
       }
 
       // ── Attendance subcollection ────────────────────────────────────
       match /attendance/{userId} {
         // Teacher can read all attendance records
-        allow read: if isAuthenticated() && isClassTeacher(classId);
+        allow read: if isAuthenticated() && canManageClass(classId);
         // Student can read only their own
         allow read: if isAuthenticated() && isOwner(userId);
         // Only the user can write their own attendance
@@ -80,15 +84,16 @@ service cloud.firestore {
       // ── RaisedHands subcollection ────────────────────────────────────
       match /raisedHands/{userId} {
         // Teacher can read all raised hands
-        allow read: if isAuthenticated() && isClassTeacher(classId);
+        allow read: if isAuthenticated() && canManageClass(classId);
         // Students can read their own
         allow read: if isAuthenticated() && isOwner(userId);
         // Enrolled student can raise/lower their own hand
         allow create, update: if isAuthenticated() && isOwner(userId) && isEnrolled(classId);
         // Student can delete their own (lower hand), teacher can delete any (dismiss)
         allow delete: if isAuthenticated() &&
-                         (isOwner(userId) || isClassTeacher(classId));
+                         (isOwner(userId) || canManageClass(classId));
       }
+
     }
   }
 }

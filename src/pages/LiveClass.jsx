@@ -117,13 +117,24 @@ const LiveClass = () => {
 
   // ── End class (teacher) ──
   const handleEndClass = useCallback(async () => {
-    endClass();
-    // Mark class as not live in Firestore
+    console.log('[LiveClass] Ending class session...');
     try {
-      await updateDoc(doc(db, 'classes', classId), { isLive: false });
-    } catch {}
-    stopLocalStream();
-    navigate('/dashboard');
+      // 1. Tell signaling server to disconnect everyone
+      endClass();
+      
+      // 2. Mark class as not live in Firestore
+      await updateDoc(doc(db, 'classes', classId), { 
+        isLive: false,
+        endedAt: serverTimestamp() 
+      });
+      console.log('[LiveClass] Class status updated to offline in Firestore.');
+    } catch (err) {
+      console.error('[LiveClass] Failed to fully end class in backend:', err);
+    } finally {
+      // 3. Always stop local tracks and navigate away
+      stopLocalStream();
+      navigate('/dashboard');
+    }
   }, [classId, endClass, stopLocalStream, navigate]);
 
   // ── Raise hand ──
