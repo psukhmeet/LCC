@@ -7,7 +7,7 @@ const WhatsAppCTA = () => {
   // Default to the first number (India)
   const phoneNumber = data.general.phoneNumbers?.[0]?.number || '7814877280';
   const cleanNumber = phoneNumber.replace(/\s+/g, '');
-  const message = encodeURIComponent("Hello, I want to join Learnwood Coaching Classes.");
+  const message = encodeURIComponent("Hello, I want details about Learnwood Coaching Classes.");
   const waLink = `https://wa.me/${cleanNumber}?text=${message}`;
 
   return (

@@ -58,10 +58,10 @@ const Home = () => {
             <h1 className="heading-xl" style={{ marginBottom: '20px' }}>
               Build Your Future with <span className="text-gradient">Learnwood</span>
             </h1>
-            <p className="text-visible" style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' , fontWeight: 'bolder', fontStyle: 'italic', color: 'var(--text-light)'}}>
-              All Subjects. All Streams. One Journey - from basics to success. 
+            <p className="text-visible" style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6', fontWeight: 'bolder', fontStyle: 'italic', color: 'var(--text-light)' }}>
+              All Subjects. All Streams. One Journey - from basics to success.
             </p>
-            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap',  }}>
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap', }}>
               <Link to="/contact" className="btn-primary">
                 Join Now <ArrowRight size={18} />
               </Link>
@@ -75,105 +75,105 @@ const Home = () => {
 
       {/* 2. COURSES SECTION */}
       <section
-  style={{
-    padding: '100px 0',
-    background: 'linear-gradient(180deg, transparent, rgba(248, 250, 252, 0.9))'
-  }}
->
-  <div className="container">
-    
-    {/* Heading */}
-    <div style={{ textAlign: 'center', marginBottom: '70px' }}>
-      <h2 className="heading-lg">Our Focus Subjects</h2>
-      <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>
-        Comprehensive coaching across all major subjects
-      </p>
-    </div>
+        style={{
+          padding: '100px 0',
+          background: 'linear-gradient(180deg, transparent, rgba(248, 250, 252, 0.9))'
+        }}
+      >
+        <div className="container">
 
-    {/* Grid */}
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: '30px'
-      }}
-    >
+          {/* Heading */}
+          <div style={{ textAlign: 'center', marginBottom: '70px' }}>
+            <h2 className="heading-lg">Our Focus Subjects</h2>
+            <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>
+              Comprehensive coaching across all major subjects
+            </p>
+          </div>
 
-      {/* Physics */}
-      <TiltCard>
-        <div className="icon-circle primary">
-          <Award size={28} />
+          {/* Grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: '30px'
+            }}
+          >
+
+            {/* Physics */}
+            <TiltCard>
+              <div className="icon-circle primary">
+                <Award size={28} />
+              </div>
+              <h3>Physics</h3>
+              <p>Understand concepts with real-world applications and problem solving.</p>
+            </TiltCard>
+
+            {/* Chemistry */}
+            <TiltCard>
+              <div className="icon-circle secondary">
+                <BookOpen size={28} />
+              </div>
+              <h3>Chemistry</h3>
+              <p>Master reactions, formulas, and concepts with easy explanations.</p>
+            </TiltCard>
+
+            {/* Mathematics */}
+            <TiltCard>
+              <div className="icon-circle primary">
+                <Calculator size={28} />
+              </div>
+              <h3>Mathematics</h3>
+              <p>Boost logical thinking and speed for competitive exams.</p>
+            </TiltCard>
+
+            {/* Biology */}
+            <TiltCard>
+              <div className="icon-circle secondary">
+                <Activity size={28} />
+              </div>
+              <h3>Biology</h3>
+              <p>Explore life sciences with diagrams and concept clarity.</p>
+            </TiltCard>
+
+            {/* English */}
+            <TiltCard>
+              <div className="icon-circle primary">
+                <Book size={28} />
+              </div>
+              <h3>English</h3>
+              <p>Improve grammar, vocabulary, and communication skills.</p>
+            </TiltCard>
+
+            {/* Commerce */}
+            <TiltCard>
+              <div className="icon-circle secondary">
+                <Briefcase size={28} />
+              </div>
+              <h3>Commerce</h3>
+              <p>Learn business, accounts, and economics with clarity.</p>
+            </TiltCard>
+
+            {/* Hindi */}
+            <TiltCard>
+              <div className="icon-circle primary">
+                <Languages size={28} />
+              </div>
+              <h3>Hindi</h3>
+              <p>Strengthen language skills with literature and grammar.</p>
+            </TiltCard>
+
+            {/* Punjabi */}
+            <TiltCard>
+              <div className="icon-circle secondary">
+                <Globe size={28} />
+              </div>
+              <h3>Punjabi</h3>
+              <p>Learn Punjabi language with culture and expression.</p>
+            </TiltCard>
+
+          </div>
         </div>
-        <h3>Physics</h3>
-        <p>Understand concepts with real-world applications and problem solving.</p>
-      </TiltCard>
-
-      {/* Chemistry */}
-      <TiltCard>
-        <div className="icon-circle secondary">
-          <BookOpen size={28} />
-        </div>
-        <h3>Chemistry</h3>
-        <p>Master reactions, formulas, and concepts with easy explanations.</p>
-      </TiltCard>
-
-      {/* Mathematics */}
-      <TiltCard>
-        <div className="icon-circle primary">
-          <Calculator size={28} />
-        </div>
-        <h3>Mathematics</h3>
-        <p>Boost logical thinking and speed for competitive exams.</p>
-      </TiltCard>
-
-      {/* Biology */}
-      <TiltCard>
-        <div className="icon-circle secondary">
-          <Activity size={28} />
-        </div>
-        <h3>Biology</h3>
-        <p>Explore life sciences with diagrams and concept clarity.</p>
-      </TiltCard>
-
-      {/* English */}
-      <TiltCard>
-        <div className="icon-circle primary">
-          <Book size={28} />
-        </div>
-        <h3>English</h3>
-        <p>Improve grammar, vocabulary, and communication skills.</p>
-      </TiltCard>
-
-      {/* Commerce */}
-      <TiltCard>
-        <div className="icon-circle secondary">
-          <Briefcase size={28} />
-        </div>
-        <h3>Commerce</h3>
-        <p>Learn business, accounts, and economics with clarity.</p>
-      </TiltCard>
-
-      {/* Hindi */}
-      <TiltCard>
-        <div className="icon-circle primary">
-          <Languages size={28} />
-        </div>
-        <h3>Hindi</h3>
-        <p>Strengthen language skills with literature and grammar.</p>
-      </TiltCard>
-
-      {/* Punjabi */}
-      <TiltCard>
-        <div className="icon-circle secondary">
-          <Globe size={28} />
-        </div>
-        <h3>Punjabi</h3>
-        <p>Learn Punjabi language with culture and expression.</p>
-      </TiltCard>
-
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* 3. ACHIEVEMENTS / RESULTS */}
       <section style={{ padding: '100px 0' }}>
@@ -218,7 +218,7 @@ const Home = () => {
             "Every topper was once a beginner"
           </motion.h2>
           <div className="glass" style={{ maxWidth: '600px', margin: '0 auto', background: 'rgba(255,255,255,0.05)', color: 'white', padding: '40px' }}>
-            <h3 style={{ fontSize: '2rem', marginBottom: '20px' }}>Start Your Journey Today</h3>
+            <h3 style={{ fontSize: '2rem', marginBottom: '20px', color: 'white' }}>Start Your Journey Today</h3>
             <p style={{ marginBottom: '30px', color: '#94a3b8' }}>Join our community of high achievers and take control of your academic future.</p>
             <Link to="/contact" className="btn-primary" style={{ fontSize: '1.1rem', padding: '15px 35px' }}>
               Enroll Now <CheckCircle2 size={20} />
@@ -230,7 +230,7 @@ const Home = () => {
       {/* Sticky Bottom Bar CTA */}
       <div className="desktop-only" style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', background: 'rgba(15, 23, 42, 0.9)', backdropFilter: 'blur(10px)', color: 'white', padding: '12px 20px', display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center', zIndex: 9998, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         <span style={{ fontWeight: '600' }}>Enroll Now | Limited Seats</span>
-        <button onClick={() => window.open(`https://wa.me/${data.general.phone}?text=Hi, How can i help  you.`, '_blank')} className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.9rem' }}>WhatsApp Us</button>
+        <button onClick={() => window.open(`https://wa.me/${data.general.phone}?text=Hello, I want details about Learnwood Coaching Classes.`, '_blank')} className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.9rem' }}>WhatsApp Us</button>
       </div>
 
     </div>
