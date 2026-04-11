@@ -17,17 +17,42 @@
   box-sizing: border-box;
 }
 
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.icon-circle.primary {
+  background: rgba(47, 128, 237, 0.1);
+  color: var(--primary);
+}
+
+.icon-circle.secondary {
+  background: rgba(86, 204, 242, 0.1);
+  color: var(--secondary);
+}
+
+h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-color);
   color: var(--text-dark);
   overflow-x: hidden;
-}
-
-a,
-button,
-input,
-textarea {
 }
 
 h1,
@@ -234,7 +259,7 @@ h6 {
 
 @media (max-width: 768px) {
   body {
-    /* Disable custom cursor on mobile for better UX */
+    overflow-x: hidden;
   }
 
   .mobile-toggle {

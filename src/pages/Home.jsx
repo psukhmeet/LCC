@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
-import { BookOpen, Award, Users, Star, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Award, Users, Star, ArrowRight, CheckCircle2, Calculator, Activity, Book, Briefcase, Languages, Globe } from 'lucide-react';
 import ParticleBackground from '../components/ui/ParticleBackground';
 import { useContext } from 'react';
-import { DataContext } from '../context/DataContext';const AnimatedCounter = ({ end, duration = 2, suffix = "+" }) => {
+import { DataContext } from '../context/DataContext'; const AnimatedCounter = ({ end, duration = 2, suffix = "+" }) => {
   const [count, setCount] = useState(0);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.5 });
 
@@ -56,12 +56,12 @@ const Home = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="heading-xl" style={{ marginBottom: '20px' }}>
-              {data.general.heroTitle}
+              Build Your Future with <span className="text-gradient">Learnwood</span>
             </h1>
-            <p className="text-visible" style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' }}>
-              {data.general.heroSubtext}
+            <p className="text-visible" style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' , fontWeight: 'bolder', fontStyle: 'italic', color: 'var(--text-light)'}}>
+              All Subjects. All Streams. One Journey - from basics to success. 
             </p>
-            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap',  }}>
               <Link to="/contact" className="btn-primary">
                 Join Now <ArrowRight size={18} />
               </Link>
@@ -74,37 +74,106 @@ const Home = () => {
       </section>
 
       {/* 2. COURSES SECTION */}
-      <section style={{ padding: '100px 0', background: 'linear-gradient(180deg, transparent, rgba(248, 250, 252, 0.8))' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <h2 className="heading-lg">Our Focus Subjects</h2>
-            <p style={{ color: 'var(--text-light)' }}>Specialized coaching in core science subjects</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
-            <TiltCard>
-              <div style={{ background: 'rgba(47, 128, 237, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
-                <Award size={30} />
-              </div>
-              <h3 style={{ fontSize: '1.5rem' }}>Physics</h3>
-              <p style={{ color: 'var(--text-light)' }}>Master the fundamental laws of nature with experimental and conceptual clarity.</p>
-            </TiltCard>
-            <TiltCard>
-              <div style={{ background: 'rgba(86, 204, 242, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--secondary)' }}>
-                <BookOpen size={30} />
-              </div>
-              <h3 style={{ fontSize: '1.5rem' }}>Chemistry</h3>
-              <p style={{ color: 'var(--text-light)' }}>From organic reactions to physical principles, simplified for your success.</p>
-            </TiltCard>
-            <TiltCard>
-              <div style={{ background: 'rgba(47, 128, 237, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
-                <Award size={30} />
-              </div>
-              <h3 style={{ fontSize: '1.5rem' }}>Mathematics</h3>
-              <p style={{ color: 'var(--text-light)' }}>Develop strong logical reasoning and problem-solving skills for competitive exams.</p>
-            </TiltCard>
-          </div>
+      <section
+  style={{
+    padding: '100px 0',
+    background: 'linear-gradient(180deg, transparent, rgba(248, 250, 252, 0.9))'
+  }}
+>
+  <div className="container">
+    
+    {/* Heading */}
+    <div style={{ textAlign: 'center', marginBottom: '70px' }}>
+      <h2 className="heading-lg">Our Focus Subjects</h2>
+      <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>
+        Comprehensive coaching across all major subjects
+      </p>
+    </div>
+
+    {/* Grid */}
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gap: '30px'
+      }}
+    >
+
+      {/* Physics */}
+      <TiltCard>
+        <div className="icon-circle primary">
+          <Award size={28} />
         </div>
-      </section>
+        <h3>Physics</h3>
+        <p>Understand concepts with real-world applications and problem solving.</p>
+      </TiltCard>
+
+      {/* Chemistry */}
+      <TiltCard>
+        <div className="icon-circle secondary">
+          <BookOpen size={28} />
+        </div>
+        <h3>Chemistry</h3>
+        <p>Master reactions, formulas, and concepts with easy explanations.</p>
+      </TiltCard>
+
+      {/* Mathematics */}
+      <TiltCard>
+        <div className="icon-circle primary">
+          <Calculator size={28} />
+        </div>
+        <h3>Mathematics</h3>
+        <p>Boost logical thinking and speed for competitive exams.</p>
+      </TiltCard>
+
+      {/* Biology */}
+      <TiltCard>
+        <div className="icon-circle secondary">
+          <Activity size={28} />
+        </div>
+        <h3>Biology</h3>
+        <p>Explore life sciences with diagrams and concept clarity.</p>
+      </TiltCard>
+
+      {/* English */}
+      <TiltCard>
+        <div className="icon-circle primary">
+          <Book size={28} />
+        </div>
+        <h3>English</h3>
+        <p>Improve grammar, vocabulary, and communication skills.</p>
+      </TiltCard>
+
+      {/* Commerce */}
+      <TiltCard>
+        <div className="icon-circle secondary">
+          <Briefcase size={28} />
+        </div>
+        <h3>Commerce</h3>
+        <p>Learn business, accounts, and economics with clarity.</p>
+      </TiltCard>
+
+      {/* Hindi */}
+      <TiltCard>
+        <div className="icon-circle primary">
+          <Languages size={28} />
+        </div>
+        <h3>Hindi</h3>
+        <p>Strengthen language skills with literature and grammar.</p>
+      </TiltCard>
+
+      {/* Punjabi */}
+      <TiltCard>
+        <div className="icon-circle secondary">
+          <Globe size={28} />
+        </div>
+        <h3>Punjabi</h3>
+        <p>Learn Punjabi language with culture and expression.</p>
+      </TiltCard>
+
+    </div>
+  </div>
+</section>
 
       {/* 3. ACHIEVEMENTS / RESULTS */}
       <section style={{ padding: '100px 0' }}>

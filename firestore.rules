@@ -92,8 +92,15 @@ service cloud.firestore {
         // Student can delete their own (lower hand), teacher can delete any (dismiss)
         allow delete: if isAuthenticated() &&
                          (isOwner(userId) || canManageClass(classId));
-      }
+    }
 
+    // ─── Settings collection ──────────────────────────────────────────
+    match /settings/{docId} {
+      // Anyone can read the website configuration
+      allow read: if true;
+      // Only authorized teachers can update settings
+      allow write: if isAuthenticated() && isTeacher();
     }
   }
 }
+

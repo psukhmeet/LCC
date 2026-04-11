@@ -23,7 +23,7 @@ const Footer = () => {
             </a>
           </div>
           <p style={{ color: '#94A3B8', lineHeight: '1.6' }}>
-            Empowering students with expert PCM coaching for Class 11th and 12th. Build your future with us.
+            Building logic, Understanding and Confidence. Complete coaching for all subjects, all streams.
           </p>
         </div>
 

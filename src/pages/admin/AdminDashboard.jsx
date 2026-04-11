@@ -28,12 +28,32 @@ const AdminDashboard = () => {
     navigate('/admin');
   };
 
-  const handleSave = () => {
-    // Save whole objects at once for better reliability instead of looping
-    updateCategory('general', localData.general);
-    updateCategory('stats', localData.stats);
-    alert('Changes saved successfully! They will now reflect across the website.');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      // 1. Update local context state
+      updateCategory('general', localData.general);
+      updateCategory('stats', localData.stats);
+      
+      // 2. Persist to Firestore for global sync
+      await setDoc(doc(db, 'settings', 'website'), {
+        general: localData.general,
+        stats: localData.stats,
+        tutors: localData.tutors,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      alert('Changes saved successfully! All devices will now reflect the new data.');
+    } catch (err) {
+      console.error('Failed to save settings:', err);
+      alert('Failed to save changes globally: ' + err.message);
+    } finally {
+      setIsSaving(false);
+    }
   };
+
 
   const SidebarButton = ({ id, icon: Icon, label }) => (
     <button
@@ -79,11 +99,17 @@ const AdminDashboard = () => {
             {activeTab === 'teachers' && 'Authorized Teachers'}
             {activeTab === 'classes'  && 'Live Classes'}
           </h2>
-          {(activeTab === 'general' || activeTab === 'stats') && (
-            <button onClick={handleSave} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px' }}>
-              <Save size={18} /> Save Changes
+          {(activeTab === 'general' || activeTab === 'stats' || activeTab === 'tutors') && (
+            <button 
+              onClick={handleSave} 
+              disabled={isSaving}
+              className="btn-primary" 
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', opacity: isSaving ? 0.7 : 1 }}
+            >
+              <Save size={18} /> {isSaving ? 'Saving...' : 'Save Changes'}
             </button>
           )}
+
         </div>
 
         {/* GENERAL TAB */}
