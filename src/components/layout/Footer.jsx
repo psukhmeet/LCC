@@ -34,7 +34,7 @@ const Footer = () => {
             <li><Link to="/" className="footer-link">Home</Link></li>
             <li><Link to="/about" className="footer-link">About Us</Link></li>
             <li><Link to="/tutors" className="footer-link">Our Tutors</Link></li>
-            <li><Link to="/contact" className="footer-link">Contact</Link></li>
+            <li><Link to="/contact" className="footer-link">Contact Us</Link></li>
             <li><a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" className="footer-link">YouTube</a></li>
           </ul>
         </div>

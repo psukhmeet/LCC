@@ -34,9 +34,9 @@ const Navbar = () => {
         <div className={`nav-menu-wrapper ${isMenuOpen ? 'active' : ''}`}>
           <ul className="nav-links">
             <li><NavLink to="/" end onClick={close}>Home</NavLink></li>
-            <li><NavLink to="/contact" onClick={close}>Contact</NavLink></li>
             <li><a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" onClick={close}>YouTube</a></li>
             <li><NavLink to="/tutors" onClick={close}>Our Tutors</NavLink></li>
+            <li><NavLink to="/contact" onClick={close}>Contact Us</NavLink></li>
             <li><NavLink to="/about" onClick={close}>About Us</NavLink></li>
 
             {/* --- Profile Link for Mobile --- */}
