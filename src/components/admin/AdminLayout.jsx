@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Settings, 
-  Users, 
-  MessageSquare, 
-  UserCheck, 
-  Radio, 
+import {
+  LayoutDashboard,
+  Settings,
+  Users,
+  MessageSquare,
+  UserCheck,
+  Radio,
   LogOut,
   Bell,
   Search,
@@ -38,29 +38,29 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#F0F4F8' }}>
-      
+
       {/* Sidebar Overlay for Mobile */}
       <AnimatePresence>
         {!sidebarOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(true)}
-            style={{ 
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.2)', 
-              zIndex: 40, display: window.innerWidth > 1024 ? 'none' : 'block' 
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.2)',
+              zIndex: 40, display: window.innerWidth > 1024 ? 'none' : 'block'
             }}
           />
         )}
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.aside 
+      <motion.aside
         initial={false}
         animate={{ width: sidebarOpen ? '280px' : '0px', opacity: sidebarOpen ? 1 : 0 }}
-        style={{ 
-          background: 'white', 
+        style={{
+          background: 'white',
           borderRight: '1px solid rgba(0,0,0,0.05)',
           display: 'flex',
           flexDirection: 'column',
@@ -82,8 +82,8 @@ const AdminLayout = ({ children }) => {
         <nav style={{ flex: 1, padding: '0 16px' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', padding: '0 16px 12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Menu</p>
           {menuItems.map((item) => (
-            <NavLink 
-              key={item.path} 
+            <NavLink
+              key={item.path}
               to={item.path}
               className={({ isActive }) => `admin-sidebar-item ${isActive ? 'active' : ''}`}
             >
@@ -94,7 +94,7 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         <div style={{ padding: '20px 16px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-          <button 
+          <button
             onClick={() => navigate('/')}
             className="admin-sidebar-item"
             style={{ width: '100%', border: 'none', background: 'transparent', cursor: 'pointer' }}
@@ -102,7 +102,7 @@ const AdminLayout = ({ children }) => {
             <Globe size={20} />
             <span>Go to Website</span>
           </button>
-          <button 
+          <button
             onClick={handleLogout}
             className="admin-sidebar-item"
             style={{ width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444' }}
@@ -115,11 +115,11 @@ const AdminLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        
+
         {/* Header */}
-        <header style={{ 
-          height: '80px', 
-          background: 'rgba(255,255,255,0.8)', 
+        <header style={{
+          height: '80px',
+          background: 'rgba(255,255,255,0.8)',
           backdropFilter: 'blur(10px)',
           borderBottom: '1px solid rgba(0,0,0,0.05)',
           display: 'flex',
@@ -131,7 +131,7 @@ const AdminLayout = ({ children }) => {
           top: 0
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <button 
+            <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               style={{ background: 'white', border: '1px solid rgba(0,0,0,0.1)', padding: '8px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
             >
@@ -150,7 +150,7 @@ const AdminLayout = ({ children }) => {
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingLeft: '24px', borderLeft: '1px solid rgba(0,0,0,0.05)' }}>
               <div style={{ textAlign: 'right' }}>
-                <p style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0 }}>Atul Singh</p>
+                <p style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0 }}>SUKHMEET SINGH</p>
                 <p style={{ fontSize: '0.75rem', color: '#64748B', margin: 0 }}>Administrator</p>
               </div>
               <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>

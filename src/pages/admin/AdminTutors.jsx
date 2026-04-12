@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { DataContext } from '../../context/DataContext';
-import { Plus, Trash2, User, Book, Briefcase, Image as ImageIcon, Save } from 'lucide-react';
+import { Plus, Trash2, User, Book, Briefcase, Image as ImageIcon, Save, GraduationCap, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
@@ -36,7 +36,7 @@ const AdminTutors = () => {
             <Save size={18} /> Cloud Sync
           </button>
           <button 
-            onClick={() => addTutor({ name: 'New Tutor', subject: '', experience: '', image: '' })}
+            onClick={() => addTutor({ name: 'New Tutor', subject: '', education: '', experience: '', achievements: '', image: '' })}
             className="btn-primary" 
             style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px' }}
           >
@@ -94,12 +94,30 @@ const AdminTutors = () => {
                 />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
+                <GraduationCap size={16} color="#64748B" />
+                <input 
+                  type="text" value={tutor.education} 
+                  onChange={(e) => updateTutor(tutor.id, {...tutor, education: e.target.value})}
+                  style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
+                  placeholder="Education (e.g. B.Tech NIT)"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
                 <Briefcase size={16} color="#64748B" />
                 <input 
                   type="text" value={tutor.experience} 
                   onChange={(e) => updateTutor(tutor.id, {...tutor, experience: e.target.value})}
                   style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
                   placeholder="Experience (e.g. 10+ Years)"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
+                <Award size={16} color="#64748B" />
+                <input 
+                  type="text" value={tutor.achievements} 
+                  onChange={(e) => updateTutor(tutor.id, {...tutor, achievements: e.target.value})}
+                  style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
+                  placeholder="Achievements (e.g. AIR-1)"
                 />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
