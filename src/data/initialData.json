@@ -30,6 +30,29 @@
         ]
       },
       {
+        "title": "Home Page UI Redesign (v2)",
+        "subtasks": [
+          { "task": "Create implementation plan and get approval", "completed": true },
+          { "task": "Implement Mesh Gradients and Blob backgrounds (index.css)", "completed": false },
+          { "task": "Redesign simplified Hero section (Home.jsx)", "completed": false },
+          { "task": "Refine Subjects & Advantage sections (Home.jsx)", "completed": false },
+          { "task": "Remove Testimonial/Review section (Home.jsx)", "completed": false },
+          { "task": "Final visual polish and responsive verification", "completed": false }
+        ]
+      },
+      {
+        "title": "Home Page UI Overhaul (Superseded by v2)",
+        "subtasks": [
+          { "task": "Create implementation plan and get approval", "completed": true },
+          { "task": "Update global styles and background patterns (index.css)", "completed": false },
+          { "task": "Refactor Hero to 2-column layout (Home.jsx)", "completed": false },
+          { "task": "Implement Trust Logo Bar (Home.jsx)", "completed": false },
+          { "task": "Add 'Learnwood Advantage' feature highlights (Home.jsx)", "completed": false },
+          { "task": "Implement Testimonial Section (Home.jsx)", "completed": false },
+          { "task": "Final visual polish and responsive verification", "completed": false }
+        ]
+      },
+      {
         "title": "Implement Global Notification System",
         "completed": true
       }
