@@ -9,6 +9,10 @@ const Footer = () => {
           <h3 className="heading-lg" style={{ color: 'white', fontSize: '1.8rem', margin: '0 0 16px 0' }}>
             <span className="text-gradient">Learnwood Coaching Classes</span>
           </h3>
+          <p style={{ color: '#94A3B8', lineHeight: '1.6' }}>
+            Building logic, Understanding and Confidence. Complete coaching for all subjects, all streams.
+          </p>
+          <h4 style={{ fontSize: '1.2rem', margin: '20px 0 20px 0', color: 'white', fontFamily: 'var(--font-heading)' }}>Let's get social :</h4>
           <div style={{ marginBottom: '16px', display: 'flex', gap: '15px' }}>
             <a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" className="footer-social-link">
               <Youtube size={24} />
@@ -23,19 +27,15 @@ const Footer = () => {
               <Facebook size={24} />
             </a>
           </div>
-          <p style={{ color: '#94A3B8', lineHeight: '1.6' }}>
-            Building logic, Understanding and Confidence. Complete coaching for all subjects, all streams.
-          </p>
         </div>
 
         <div style={{ flex: '1 1 200px' }}>
           <h4 style={{ fontSize: '1.2rem', margin: '0 0 20px 0', color: 'white', fontFamily: 'var(--font-heading)' }}>Quick Links</h4>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', padding: 0 }}>
             <li><Link to="/" className="footer-link">Home</Link></li>
-            <li><Link to="/about" className="footer-link">About Us</Link></li>
             <li><Link to="/tutors" className="footer-link">Our Tutors</Link></li>
             <li><Link to="/contact" className="footer-link">Contact Us</Link></li>
-            <li><a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" className="footer-link">YouTube</a></li>
+            <li><Link to="/about" className="footer-link">About Us</Link></li>
           </ul>
         </div>
 
