@@ -16,6 +16,7 @@ const WhatsAppCTA = () => {
         href={waLink}
         target="_blank"
         rel="noopener noreferrer"
+        className="whatsapp-float"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -26,11 +27,8 @@ const WhatsAppCTA = () => {
           borderRadius: '50%',
           boxShadow: '0 4px 14px rgba(37, 211, 102, 0.4)',
           color: 'white',
-          textDecoration: 'none',
-          transition: 'transform 0.3s ease'
+          textDecoration: 'none'
         }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
       >
         <MessageCircle size={32} />
       </a>

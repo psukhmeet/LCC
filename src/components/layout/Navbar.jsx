@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, UserCircle2, Menu, X, Radio } from 'lucide-react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { UserCircle2, Menu, X } from 'lucide-react';
 import logoImg from '../../assets/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
 
@@ -30,45 +30,30 @@ const Navbar = () => {
           <span>Learnwood Coaching Classes</span>
         </Link>
 
-        <button className="mobile-toggle" onClick={toggleMenu} aria-label="Toggle Menu">
+        <button
+          className="mobile-toggle"
+          onClick={toggleMenu}
+          aria-expanded={isMenuOpen}
+          aria-label="Toggle Menu"
+        >
           {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
         <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-          <li><Link to="/" onClick={close}>Home</Link></li>
-          <li><Link to="/contact" onClick={close}>Contact</Link></li>
-          <li><Link to="https://www.youtube.com/@LearnwoodCoachingClasses" target="blank" onClick={close}>YouTube</Link></li>
-          <li><Link to="/about" onClick={close}>About Us</Link></li>
+          <li><NavLink to="/" end onClick={close}>Home</NavLink></li>
+          <li><NavLink to="/contact" onClick={close}>Contact</NavLink></li>
+          <li><a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" onClick={close}>YouTube</a></li>
+          <li><NavLink to="/about" onClick={close}>About Us</NavLink></li>
 
           {/* ── Live Classes CTA ── */}
           <li>
             <a
               href="/dashboard"
               onClick={handleLiveClassesClick}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: 'linear-gradient(135deg, #2F80ED, #56CCF2)',
-                color: 'white',
-                padding: '7px 16px',
-                borderRadius: '20px',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                textDecoration: 'none',
-                boxShadow: '0 0 12px rgba(47,128,237,0.4)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(86,204,242,0.5)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 0 12px rgba(47,128,237,0.4)'; }}
+              className="nav-live-link"
             >
               {/* Pulsing live dot */}
-              <span style={{
-                width: '7px', height: '7px', borderRadius: '50%',
-                background: 'white', display: 'inline-block',
-                animation: 'navLivePulse 1.5s ease-in-out infinite',
-              }} />
+              <span className="nav-live-dot" />
               {currentUser ? '🎓 My Classes' : '📺 Join Live Class'}
             </a>
           </li>
@@ -135,12 +120,8 @@ const Navbar = () => {
           )}
         </div>
       </div>
-
-      {/* Pulse keyframe */}
-      <style>{`@keyframes navLivePulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
     </nav>
   );
 };
 
 export default Navbar;
-

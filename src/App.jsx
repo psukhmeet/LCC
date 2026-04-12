@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -22,50 +24,67 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 /* ─── Main layout wrapper — hides nav/footer on classroom pages ─── */
 const AppContent = () => {
   const location = useLocation();
+  const shouldReduceMotion = useReducedMotion();
   const isClassroomRoute = location.pathname.startsWith('/live');
   const isAuthRoute      = ['/login'].includes(location.pathname);
   const isFullPage       = isClassroomRoute || isAuthRoute;
+
+  useEffect(() => {
+    if (!isClassroomRoute) {
+      window.scrollTo({
+        top: 0,
+        behavior: shouldReduceMotion ? 'auto' : 'smooth',
+      });
+    }
+  }, [location.pathname, isClassroomRoute, shouldReduceMotion]);
 
   return (
     <div className={isFullPage ? '' : 'app-container'}>
       {!isFullPage && <Navbar />}
 
-      <main
-        className={isFullPage ? '' : 'main-content'}
-        style={isFullPage ? { height: '100vh', width: '100vw' } : {}}
-      >
-        <Routes>
-          {/* ── Public ── */}
-          <Route path="/"                 element={<Home />} />
-          <Route path="/about"            element={<About />} />
-          <Route path="/tutors"           element={<Tutors />} />
-          <Route path="/contact"          element={<Contact />} />
-          <Route path="/privacy-policy"   element={<PrivacyPolicy />} />
-          <Route path="/terms-conditions" element={<TermsConditions />} />
-          <Route path="/login"            element={<Login />} />
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.main
+          key={location.pathname}
+          className={isFullPage ? '' : 'main-content'}
+          style={isFullPage ? { height: '100vh', width: '100vw' } : {}}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Routes location={location} key={location.pathname}>
+            {/* ── Public ── */}
+            <Route path="/"                 element={<Home />} />
+            <Route path="/about"            element={<About />} />
+            <Route path="/tutors"           element={<Tutors />} />
+            <Route path="/contact"          element={<Contact />} />
+            <Route path="/privacy-policy"   element={<PrivacyPolicy />} />
+            <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/login"            element={<Login />} />
 
-          {/* ── Admin ── */}
-          <Route path="/admin"            element={<AdminLogin />} />
-          <Route path="/admin/dashboard"  element={<AdminDashboard />} />
+            {/* ── Admin ── */}
+            <Route path="/admin"            element={<AdminLogin />} />
+            <Route path="/admin/dashboard"  element={<AdminDashboard />} />
 
-          {/* ── Protected: requires auth ── */}
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } />
+            {/* ── Protected: requires auth ── */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
 
-          {/* ── Protected: requires auth + enrollment ── */}
-          <Route path="/live/:classId" element={
-            <ProtectedRoute>
-              <LiveClass />
-            </ProtectedRoute>
-          } />
+            {/* ── Protected: requires auth + enrollment ── */}
+            <Route path="/live/:classId" element={
+              <ProtectedRoute>
+                <LiveClass />
+              </ProtectedRoute>
+            } />
 
-          {/* ── Fallback ── */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
+            {/* ── Fallback ── */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </motion.main>
+      </AnimatePresence>
 
       {!isFullPage && <WhatsAppCTA />}
       {!isFullPage && <Footer />}
