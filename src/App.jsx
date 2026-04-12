@@ -20,7 +20,13 @@ import About from './pages/About';
 import Profile from './pages/Profile';
 
 import AdminLogin from './pages/admin/AdminLogin';
-import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminOverview from './pages/admin/AdminOverview';
+import AdminSettings from './pages/admin/AdminSettings';
+import AdminTutors from './pages/admin/AdminTutors';
+import AdminInquiries from './pages/admin/AdminInquiries';
+import AdminTeachers from './pages/admin/AdminTeachers';
+import AdminClasses from './pages/admin/AdminClasses';
 
 /* ─── Main layout wrapper — hides nav/footer on classroom/admin pages ─── */
 const AppContent = () => {
@@ -30,6 +36,13 @@ const AppContent = () => {
   const isAdminRoute     = location.pathname.startsWith('/admin');
   const isAuthRoute      = ['/login'].includes(location.pathname);
   const isFullPage       = isClassroomRoute || isAuthRoute || isAdminRoute;
+
+  // Local Admin Guard
+  const ProtectedAdmin = ({ children }) => {
+    const isAdmin = localStorage.getItem('isAdmin');
+    if (!isAdmin) return <Navigate to="/admin" replace />;
+    return <AdminLayout>{children}</AdminLayout>;
+  };
 
   useEffect(() => {
     if (!isClassroomRoute) {
@@ -66,7 +79,13 @@ const AppContent = () => {
 
             {/* ── Admin ── */}
             <Route path="/admin"            element={<AdminLogin />} />
-            <Route path="/admin/dashboard"  element={<AdminDashboard />} />
+            
+            <Route path="/admin/dashboard"  element={<ProtectedAdmin><AdminOverview /></ProtectedAdmin>} />
+            <Route path="/admin/settings"   element={<ProtectedAdmin><AdminSettings /></ProtectedAdmin>} />
+            <Route path="/admin/tutors"     element={<ProtectedAdmin><AdminTutors /></ProtectedAdmin>} />
+            <Route path="/admin/inquiries"  element={<ProtectedAdmin><AdminInquiries /></ProtectedAdmin>} />
+            <Route path="/admin/teachers"   element={<ProtectedAdmin><AdminTeachers /></ProtectedAdmin>} />
+            <Route path="/admin/classes"    element={<ProtectedAdmin><AdminClasses /></ProtectedAdmin>} />
 
             {/* ── Protected: requires auth ── */}
             <Route path="/dashboard" element={
