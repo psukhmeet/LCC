@@ -62,7 +62,7 @@ const PrivacyPolicy = () => {
               <br />
               <strong>Phone:</strong> +91 78148 77280
               <br />
-              <strong>Address:</strong> Learnwood Coaching Classes, Punjab.
+              <strong>Address:</strong> Learnwood Coaching Classes, India.
             </p>
           </section>
 
