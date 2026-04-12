@@ -128,6 +128,12 @@ const Navbar = () => {
                   >
                     <div className="notes-header">
                       <span>Announcements</span>
+                      <button 
+                        onClick={() => setShowNotes(false)}
+                        style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '4px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      >
+                        <X size={18} />
+                      </button>
                     </div>
                     <div className="notes-list">
                       {(data.notifications || []).length > 0 ? (
