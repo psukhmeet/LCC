@@ -1,4 +1,17 @@
 .logo {
-    height: 20px;
-    width: 20px;
+    height: 6px;
+    width: 6px;
+}
+
+.logo-img {
+    height: 6px;
+    width: 6px;
+}
+.navlink {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
 }

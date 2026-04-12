@@ -17,17 +17,31 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import LiveClass from './pages/LiveClass';
 import About from './pages/About';
+import Profile from './pages/Profile';
 
 import AdminLogin from './pages/admin/AdminLogin';
-import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDashboard from './pages/admin/dashboard/Dashboard';
+import AdminSettings from './pages/admin/Settings';
+import AdminTutors from './pages/admin/Tutors';
+import AdminTeachers from './pages/admin/Teachers';
+import AdminInquiries from './pages/admin/Inquiries';
+import AdminClasses from './pages/admin/Classes';
 
-/* ─── Main layout wrapper — hides nav/footer on classroom pages ─── */
+/* ─── Main layout wrapper — hides nav/footer on classroom/admin pages ─── */
 const AppContent = () => {
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
   const isClassroomRoute = location.pathname.startsWith('/live');
+  const isAdminRoute     = location.pathname.startsWith('/admin');
   const isAuthRoute      = ['/login'].includes(location.pathname);
-  const isFullPage       = isClassroomRoute || isAuthRoute;
+  const isFullPage       = isClassroomRoute || isAuthRoute || isAdminRoute;
+
+  // Local Admin Guard for new routes (matching the old dashboard's logic)
+  const ProtectedAdmin = ({ children }) => {
+    const isAdmin = localStorage.getItem('isAdmin');
+    if (!isAdmin) return <Navigate to="/admin" replace />;
+    return children;
+  };
 
   useEffect(() => {
     if (!isClassroomRoute) {
@@ -63,13 +77,54 @@ const AppContent = () => {
             <Route path="/login"            element={<Login />} />
 
             {/* ── Admin ── */}
-            <Route path="/admin"            element={<AdminLogin />} />
-            <Route path="/admin/dashboard"  element={<AdminDashboard />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            
+            <Route path="/admin/dashboard" element={
+              <ProtectedAdmin>
+                <AdminDashboard />
+              </ProtectedAdmin>
+            } />
+
+            <Route path="/admin/settings" element={
+              <ProtectedAdmin>
+                <AdminSettings />
+              </ProtectedAdmin>
+            } />
+
+            <Route path="/admin/tutors" element={
+              <ProtectedAdmin>
+                <AdminTutors />
+              </ProtectedAdmin>
+            } />
+
+            <Route path="/admin/teachers" element={
+              <ProtectedAdmin>
+                <AdminTeachers />
+              </ProtectedAdmin>
+            } />
+
+            <Route path="/admin/inquiries" element={
+              <ProtectedAdmin>
+                <AdminInquiries />
+              </ProtectedAdmin>
+            } />
+
+            <Route path="/admin/classes" element={
+              <ProtectedAdmin>
+                <AdminClasses />
+              </ProtectedAdmin>
+            } />
 
             {/* ── Protected: requires auth ── */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             } />
 

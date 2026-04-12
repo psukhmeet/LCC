@@ -3,10 +3,12 @@ import { Instagram, Youtube, Facebook, MessageCircle } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer style={{ background: '#1E293B', color: 'white', padding: '60px 0 30px', marginTop: 'auto' }}>
+    <footer className="footer-main">
       <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '40px' }}>
         <div style={{ flex: '1 1 300px' }}>
-          <h3 className="heading-lg" style={{ color: 'white', fontSize: '1.8rem', margin: '0 0 16px 0' }}><span className="text-gradient">Learnwood Coaching Classes</span></h3>
+          <h3 className="heading-lg" style={{ color: 'white', fontSize: '1.8rem', margin: '0 0 16px 0' }}>
+            <span className="text-gradient">Learnwood Coaching Classes</span>
+          </h3>
           <div style={{ marginBottom: '16px', display: 'flex', gap: '15px' }}>
             <a href="https://www.youtube.com/@LearnwoodCoachingClasses" target="_blank" rel="noopener noreferrer" className="footer-social-link">
               <Youtube size={24} />
@@ -45,7 +47,7 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className="container" style={{ marginTop: '40px', paddingTop: '20px', borderTop: '1px solid #334155', textAlign: 'center', color: '#64748B' }}>
+      <div className="container footer-bottom">
         <p>&copy; {new Date().getFullYear()} Learnwood Coaching Classes. All rights reserved.</p>
       </div>
     </footer>
