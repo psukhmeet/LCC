@@ -38,22 +38,22 @@ const Contact = () => {
   };
 
   return (
-    <div className="container" style={{ paddingTop: '120px', paddingBottom: '80px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+    <div className="container" style={{ paddingTop: 'clamp(80px, 15vh, 120px)', paddingBottom: '80px' }}>
+      <div style={{ textAlign: 'center', marginBottom: 'clamp(30px, 8vh, 60px)' }}>
         <h1 className="heading-xl">Get in <span className="text-gradient">Touch</span></h1>
         <p style={{ color: 'var(--text-light)', fontSize: '1.2rem', marginTop: '10px' }}>We are here to answer your questions and guide you.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
 
         {/* Contact Form */}
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           className="glass"
-          style={{ padding: '40px', borderRadius: '20px' }}
+          style={{ padding: '30px', borderRadius: '20px' }}
         >
-          <h2 style={{ marginBottom: '30px', fontSize: '1.8rem' }}>Send a Message</h2>
+          <h2 style={{ marginBottom: '25px', fontSize: '1.6rem' }}>Send a Message</h2>
 
           {/* Success banner */}
           {submitted && (
@@ -91,7 +91,7 @@ const Contact = () => {
             />
             <textarea
               placeholder="Your message or query..." className="glass" required
-              style={{ width: '100%', padding: '15px', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '10px', fontSize: '1rem', outline: 'none', height: '150px', resize: 'vertical' }}
+              style={{ width: '100%', padding: '15px', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '10px', fontSize: '1rem', outline: 'none', height: '140px', resize: 'vertical' }}
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             />
@@ -103,20 +103,20 @@ const Contact = () => {
 
         {/* Contact Info */}
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '30px', justifyContent: 'center' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}
         >
-          <div className="glass" style={{ padding: '40px', borderRadius: '20px' }}>
-            <h3 style={{ marginBottom: '30px', fontSize: '1.8rem' }}>Contact Information</h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '30px' }}>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', color: 'var(--text-light)' }}>
-                <div style={{ background: 'var(--primary)', color: 'white', padding: '12px', borderRadius: '50%', flexShrink: 0 }}><Phone size={24} /></div>
-                <div>
+          <div className="glass" style={{ padding: '30px', borderRadius: '20px' }}>
+            <h3 style={{ marginBottom: '25px', fontSize: '1.6rem' }}>Contact Information</h3>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '25px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px', color: 'var(--text-light)' }}>
+                <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%', flexShrink: 0 }}><Phone size={22} /></div>
+                <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, color: 'var(--text-dark)', marginBottom: '8px', fontSize: '1.1rem' }}>Phone Numbers</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {(data.general.phoneNumbers || []).map((p, idx) => (
-                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: '40px' }}>
+                      <div key={idx} className="contact-info-row" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: '15px' }}>
                         <span style={{ fontWeight: 600 }}>{p.country}:</span>
                         <a href={`tel:${p.number.replace(/\s+/g, '')}`} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 700 }}>{p.number}</a>
                       </div>
@@ -124,11 +124,11 @@ const Contact = () => {
                   </div>
                 </div>
               </li>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '20px', color: 'var(--text-light)' }}>
-                <div style={{ background: 'var(--primary)', color: 'white', padding: '12px', borderRadius: '50%', flexShrink: 0 }}><Mail size={24} /></div>
-                <div>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px', color: 'var(--text-light)' }}>
+                <div style={{ background: 'var(--primary)', color: 'white', padding: '10px', borderRadius: '50%', flexShrink: 0 }}><Mail size={22} /></div>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 700, color: 'var(--text-dark)', marginBottom: '4px', fontSize: '1.1rem' }}>Email Address</div>
-                  <a href={`mailto:${data.general.email}`} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 700 }}>{data.general.email}</a>
+                  <a href={`mailto:${data.general.email}`} className="text-break" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 700, display: 'block' }}>{data.general.email}</a>
                 </div>
               </li>
             </ul>

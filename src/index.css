@@ -847,3 +847,16 @@ li {
   color: #64748b;
   font-size: 0.85rem;
 }
+/* --- Contact & Utils --- */
+.text-break {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+  .contact-info-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+}
