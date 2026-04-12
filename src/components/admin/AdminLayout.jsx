@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { DataContext } from '../../context/DataContext';
 import {
   LayoutDashboard,
   Settings,
@@ -18,9 +19,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logoImg from '../../assets/logo.png';
 
 const AdminLayout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { data } = useContext(DataContext);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleSidebarItemClick = () => {
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('isAdmin');
@@ -32,6 +40,7 @@ const AdminLayout = ({ children }) => {
     { icon: Settings, label: 'Site Config', path: '/admin/settings' },
     { icon: Users, label: 'Manage Tutors', path: '/admin/tutors' },
     { icon: MessageSquare, label: 'Inquiries', path: '/admin/inquiries' },
+    { icon: Bell, label: 'Broadcast Center', path: '/admin/notifications' },
     { icon: UserCheck, label: 'Authorized Teachers', path: '/admin/teachers' },
     { icon: Radio, label: 'Live Classes', path: '/admin/classes' },
   ];
@@ -85,6 +94,7 @@ const AdminLayout = ({ children }) => {
             <NavLink
               key={item.path}
               to={item.path}
+              onClick={handleSidebarItemClick}
               className={({ isActive }) => `admin-sidebar-item ${isActive ? 'active' : ''}`}
             >
               <item.icon size={20} />
@@ -144,9 +154,22 @@ const AdminLayout = ({ children }) => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <button style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#64748B' }}>
+            <button 
+              onClick={() => navigate('/admin/notifications')}
+              style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#64748B' }}
+            >
               <Bell size={22} />
-              <span style={{ position: 'absolute', top: '-4px', right: '-4px', width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%', border: '2px solid white' }}></span>
+              {(data.notifications || []).length > 0 && (
+                <span style={{ 
+                  position: 'absolute', top: '-4px', right: '-4px', 
+                  minWidth: '16px', height: '16px', padding: '0 4px',
+                  background: '#ef4444', color: 'white', borderRadius: '50%', 
+                  border: '2px solid white', fontSize: '0.6rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  {data.notifications.length}
+                </span>
+              )}
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingLeft: '24px', borderLeft: '1px solid rgba(0,0,0,0.05)' }}>
               <div style={{ textAlign: 'right' }}>

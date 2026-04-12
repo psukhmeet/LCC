@@ -27,6 +27,7 @@ import AdminTutors from './pages/admin/AdminTutors';
 import AdminInquiries from './pages/admin/AdminInquiries';
 import AdminTeachers from './pages/admin/AdminTeachers';
 import AdminClasses from './pages/admin/AdminClasses';
+import AdminNotifications from './pages/admin/AdminNotifications';
 
 /* ─── Main layout wrapper — hides nav/footer on classroom/admin pages ─── */
 const AppContent = () => {
@@ -86,6 +87,7 @@ const AppContent = () => {
             <Route path="/admin/inquiries"  element={<ProtectedAdmin><AdminInquiries /></ProtectedAdmin>} />
             <Route path="/admin/teachers"   element={<ProtectedAdmin><AdminTeachers /></ProtectedAdmin>} />
             <Route path="/admin/classes"    element={<ProtectedAdmin><AdminClasses /></ProtectedAdmin>} />
+            <Route path="/admin/notifications" element={<ProtectedAdmin><AdminNotifications /></ProtectedAdmin>} />
 
             {/* ── Protected: requires auth ── */}
             <Route path="/dashboard" element={
@@ -123,7 +125,7 @@ function App() {
   return (
     <AuthProvider>
       <DataProvider>
-        <Router>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AppContent />
         </Router>
       </DataProvider>

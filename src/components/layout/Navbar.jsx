@@ -1,16 +1,36 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { UserCircle2, Menu, X } from 'lucide-react';
+import { UserCircle2, Menu, X, Bell, Info, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import logoImg from '../../assets/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
+import { DataContext } from '../../context/DataContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const { data } = useContext(DataContext);
   const { currentUser, userProfile, loading } = useAuthContext();
   const navigate = useNavigate();
 
+  const [lastSeen, setLastSeen] = useState(() => localStorage.getItem('last_seen_note') || '');
+
+  const unreadCount = (data.notifications || []).filter(n => n.id > lastSeen).length;
+
+  const handleToggleNotes = () => {
+    setShowNotes(!showNotes);
+    if (!showNotes && data.notifications?.length > 0) {
+      const latestId = data.notifications[0].id;
+      setLastSeen(latestId);
+      localStorage.setItem('last_seen_note', latestId);
+    }
+  };
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const close = () => setIsMenuOpen(false);
+  const close = () => {
+    setIsMenuOpen(false);
+    setShowNotes(false);
+  };
 
   const handleLiveClassesClick = (e) => {
     e.preventDefault();
@@ -84,6 +104,57 @@ const Navbar = () => {
           </div>
 
           <div className="nav-actions">
+            {/* Notification Bell */}
+            <div className="notification-wrapper" style={{ position: 'relative' }}>
+              <button 
+                className="nav-action-btn"
+                onClick={handleToggleNotes}
+                title="Notifications"
+                style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dark)', display: 'flex' }}
+              >
+                <Bell size={24} />
+                {unreadCount > 0 && (
+                  <span className="notification-badge" />
+                )}
+              </button>
+
+              <AnimatePresence>
+                {showNotes && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="notification-dropdown glass"
+                  >
+                    <div className="notes-header">
+                      <span>Announcements</span>
+                    </div>
+                    <div className="notes-list">
+                      {(data.notifications || []).length > 0 ? (
+                        data.notifications.slice(0, 5).map(note => (
+                          <div key={note.id} className="note-card">
+                            <div className={`note-icon ${note.type}`}>
+                              {note.type === 'alert' ? <AlertTriangle size={14} /> : note.type === 'success' ? <CheckCircle size={14} /> : <Info size={14} />}
+                            </div>
+                            <div className="note-body">
+                              <p className="note-title">{note.title}</p>
+                              <p className="note-msg">{note.message}</p>
+                              <span className="note-time">{note.createdAt?.toDate ? note.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently'}</span>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="notes-empty">
+                          <Bell size={30} opacity={0.2} />
+                          <p>No new updates</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             {!loading && currentUser ? (
               <div className="user-pill-container">
                 <Link to="/profile" className="user-pill" title="View Profile">

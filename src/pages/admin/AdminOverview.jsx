@@ -124,8 +124,12 @@ const AdminOverview = () => {
         ))}
       </div>
 
-      {/* Main Analysis Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+      {/* Charts Section */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : '1fr 1fr', 
+        gap: '30px' 
+      }}>
         
         {/* Engagement Chart */}
         <div style={{ background: 'white', padding: '24px', borderRadius: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useContext } from 'react';
 import { DataContext } from '../context/DataContext';
-import { GraduationCap, Award, Book, Briefcase } from 'lucide-react';
+import { GraduationCap, Award, Briefcase, Book } from 'lucide-react';
 
 const Tutors = () => {
   const { data } = useContext(DataContext);
@@ -68,10 +68,10 @@ const Tutors = () => {
               </h3>
               
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <InfoRow icon={Book} text={tutor.subject} color="var(--primary)" />
-                <InfoRow icon={GraduationCap} text={tutor.education} color="#8B5CF6" />
-                <InfoRow icon={Briefcase} text={tutor.experience} color="#10B981" />
-                <InfoRow icon={Award} text={tutor.achievements} color="#F59E0B" />
+                {tutor.subject && <InfoRow icon={Book} text={tutor.subject} color="var(--primary)" />}
+                {tutor.education && <InfoRow icon={GraduationCap} text={tutor.education} color="#8B5CF6" />}
+                {tutor.experience && <InfoRow icon={Briefcase} text={tutor.experience} color="#10B981" />}
+                {tutor.achievements && <InfoRow icon={Award} text={tutor.achievements} color="#F59E0B" />}
               </div>
             </div>
           </motion.div>

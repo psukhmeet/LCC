@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
 import initialData from '../data/initialData.json';
 import { db } from '../firebase/config';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, orderBy } from 'firebase/firestore';
 
 export const DataContext = createContext();
 
@@ -39,10 +39,19 @@ export const DataProvider = ({ children }) => {
           ...prev,
           general: { ...prev.general, ...(cloudData.general || {}) },
           stats: { ...prev.stats, ...(cloudData.stats || {}) },
-          // Tutors are already in the top level if we save them there
           tutors: cloudData.tutors || prev.tutors
         }));
       }
+    });
+    return () => unsub();
+  }, []);
+
+  // 2. Sync notifications from Firestore
+  useEffect(() => {
+    const q = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'));
+    const unsub = onSnapshot(q, (snapshot) => {
+      const notes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setData(prev => ({ ...prev, notifications: notes }));
     });
     return () => unsub();
   }, []);

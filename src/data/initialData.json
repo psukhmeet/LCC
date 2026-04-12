@@ -16,9 +16,24 @@
         "country": "USA & Canada",
         "number": "+1 571-373-1446"
       }
-
     ],
-    "email": "learnwoodcoachingclasses@gmail.com"
+    "email": "learnwoodcoachingclasses@gmail.com",
+    "tasks": [
+      {
+        "title": "Mobile Responsiveness Overhaul",
+        "subtasks": [
+          { "task": "Create implementation plan and get approval", "completed": true },
+          { "task": "Make Admin Sidebar a drawer on mobile (AdminLayout.jsx)", "completed": false },
+          { "task": "Stack Admin Dashboard grids on mobile (AdminOverview.jsx)", "completed": false },
+          { "task": "Stack Broadcast Center grids on mobile (AdminNotifications.jsx)", "completed": false },
+          { "task": "Refine Notification Dropdown for small screens (index.css)", "completed": false }
+        ]
+      },
+      {
+        "title": "Implement Global Notification System",
+        "completed": true
+      }
+    ]
   },
   "stats": {
     "studentsMentored": 500,
@@ -32,7 +47,6 @@
     {
       "id": "1",
       "name": "Mr. Sukhmeet Singh",
-      "subject": "Mathematics",
       "education": "NIT Jamshedpur | AIR-377 NIMCET'25",
       "experience": "5+ Years of Expert Teaching",
       "achievements": "Mentored 500+ Students to Top Engineering Colleges",
