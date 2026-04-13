@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useContext } from 'react';
 import { DataContext } from '../context/DataContext';
-import { GraduationCap, Award, Briefcase, Book } from 'lucide-react';
+import { GraduationCap, Award, Briefcase, Book, Instagram, Linkedin, Facebook, Github, Globe } from 'lucide-react';
 
 const Tutors = () => {
   const { data } = useContext(DataContext);
@@ -72,6 +72,34 @@ const Tutors = () => {
                 {tutor.education && <InfoRow icon={GraduationCap} text={tutor.education} color="#8B5CF6" />}
                 {tutor.experience && <InfoRow icon={Briefcase} text={tutor.experience} color="#10B981" />}
                 {tutor.achievements && <InfoRow icon={Award} text={tutor.achievements} color="#F59E0B" />}
+              </div>
+
+              <div style={{ display: 'flex', gap: '15px', marginTop: '25px', paddingTop: '20px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                {tutor.instagram && (
+                  <a href={tutor.instagram} target="_blank" rel="noopener noreferrer" style={{ color: '#E1306C', display: 'flex' }} className="social-icon">
+                    <Instagram size={20} />
+                  </a>
+                )}
+                {tutor.linkedin && (
+                  <a href={tutor.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: '#0077B5', display: 'flex' }} className="social-icon">
+                    <Linkedin size={20} />
+                  </a>
+                )}
+                {tutor.facebook && (
+                  <a href={tutor.facebook} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F2', display: 'flex' }} className="social-icon">
+                    <Facebook size={20} />
+                  </a>
+                )}
+                {tutor.github && (
+                  <a href={tutor.github} target="_blank" rel="noopener noreferrer" style={{ color: '#333', display: 'flex' }} className="social-icon">
+                    <Github size={20} />
+                  </a>
+                )}
+                {tutor.website && (
+                  <a href={tutor.website} target="_blank" rel="noopener noreferrer" style={{ color: '#059669', display: 'flex' }} className="social-icon">
+                    <Globe size={20} />
+                  </a>
+                )}
               </div>
             </div>
           </motion.div>

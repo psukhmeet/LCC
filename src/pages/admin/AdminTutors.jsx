@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { DataContext } from '../../context/DataContext';
-import { Plus, Trash2, User, Book, Briefcase, Image as ImageIcon, Save, GraduationCap, Award, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
+import { Plus, Trash2, User, Book, Briefcase, Image as ImageIcon, Save, GraduationCap, Award, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, Instagram, Linkedin, Facebook, Github, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
@@ -158,6 +158,51 @@ const AdminTutors = () => {
                   onChange={(e) => updateTutor(tutor.id, {...tutor, image: e.target.value})}
                   style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
                   placeholder="Image filename (e.g. tutor.jpg)"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
+                <Instagram size={16} color="#E1306C" />
+                <input 
+                  type="text" value={tutor.instagram || ''} 
+                  onChange={(e) => updateTutor(tutor.id, {...tutor, instagram: e.target.value})}
+                  style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
+                  placeholder="Instagram URL"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
+                <Linkedin size={16} color="#0077B5" />
+                <input 
+                  type="text" value={tutor.linkedin || ''} 
+                  onChange={(e) => updateTutor(tutor.id, {...tutor, linkedin: e.target.value})}
+                  style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
+                  placeholder="LinkedIn URL"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
+                <Facebook size={16} color="#1877F2" />
+                <input 
+                  type="text" value={tutor.facebook || ''} 
+                  onChange={(e) => updateTutor(tutor.id, {...tutor, facebook: e.target.value})}
+                  style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
+                  placeholder="Facebook URL"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
+                <Github size={16} color="#333" />
+                <input 
+                  type="text" value={tutor.github || ''} 
+                  onChange={(e) => updateTutor(tutor.id, {...tutor, github: e.target.value})}
+                  style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
+                  placeholder="GitHub URL"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px' }}>
+                <Globe size={16} color="#059669" />
+                <input 
+                  type="text" value={tutor.website || ''} 
+                  onChange={(e) => updateTutor(tutor.id, {...tutor, website: e.target.value})}
+                  style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', width: '100%' }}
+                  placeholder="Portfolio Website URL"
                 />
               </div>
             </div>
