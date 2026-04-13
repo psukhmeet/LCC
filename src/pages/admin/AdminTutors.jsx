@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { DataContext } from '../../context/DataContext';
-import { Plus, Trash2, User, Book, Briefcase, Image as ImageIcon, Save, GraduationCap, Award } from 'lucide-react';
+import { Plus, Trash2, User, Book, Briefcase, Image as ImageIcon, Save, GraduationCap, Award, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
 const AdminTutors = () => {
-  const { data, updateTutor, addTutor, removeTutor } = useContext(DataContext);
+  const { data, updateTutor, addTutor, removeTutor, moveTutor } = useContext(DataContext);
 
   const handleGlobalSave = async () => {
     try {
@@ -61,6 +61,37 @@ const AdminTutors = () => {
               position: 'relative'
             }}
           >
+            <div style={{ position: 'absolute', top: '20px', right: '60px', display: 'flex', gap: '8px' }}>
+              <button 
+                onClick={() => moveTutor(tutor.id, 'top')}
+                style={{ background: '#F1F5F9', color: '#64748B', border: 'none', padding: '8px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Move to Top"
+              >
+                <ChevronsUp size={16} />
+              </button>
+              <button 
+                onClick={() => moveTutor(tutor.id, 'up')}
+                style={{ background: '#F1F5F9', color: '#64748B', border: 'none', padding: '8px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Move Up"
+              >
+                <ChevronUp size={16} />
+              </button>
+              <button 
+                onClick={() => moveTutor(tutor.id, 'down')}
+                style={{ background: '#F1F5F9', color: '#64748B', border: 'none', padding: '8px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Move Down"
+              >
+                <ChevronDown size={16} />
+              </button>
+              <button 
+                onClick={() => moveTutor(tutor.id, 'bottom')}
+                style={{ background: '#F1F5F9', color: '#64748B', border: 'none', padding: '8px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Move to Bottom"
+              >
+                <ChevronsDown size={16} />
+              </button>
+            </div>
+
             <button 
               onClick={() => removeTutor(tutor.id)}
               style={{ position: 'absolute', top: '20px', right: '20px', background: '#FEE2E2', color: '#EF4444', border: 'none', padding: '8px', borderRadius: '10px', cursor: 'pointer' }}

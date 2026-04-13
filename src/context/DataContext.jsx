@@ -133,6 +133,30 @@ export const DataProvider = ({ children }) => {
     }));
   };
 
+  const moveTutor = (id, direction) => {
+    setData((prev) => {
+      const index = prev.tutors.findIndex((t) => t.id === id);
+      if (index === -1) return prev;
+
+      const newTutors = [...prev.tutors];
+      const tutor = newTutors.splice(index, 1)[0];
+
+      if (direction === 'top') {
+        newTutors.unshift(tutor);
+      } else if (direction === 'bottom') {
+        newTutors.push(tutor);
+      } else if (direction === 'up') {
+        const newIndex = Math.max(0, index - 1);
+        newTutors.splice(newIndex, 0, tutor);
+      } else if (direction === 'down') {
+        const newIndex = Math.min(newTutors.length, index + 1);
+        newTutors.splice(newIndex, 0, tutor);
+      }
+
+      return { ...prev, tutors: newTutors };
+    });
+  };
+
   return (
     <DataContext.Provider value={{ 
       data, 
@@ -141,6 +165,7 @@ export const DataProvider = ({ children }) => {
       updateTutor, 
       addTutor, 
       removeTutor, 
+      moveTutor,
       addMessage, 
       removeMessage, 
       resetToDefault: () => setData(initialData) 
